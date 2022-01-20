@@ -46,7 +46,7 @@ function SignUp({navigation}) {
         //Toast.show({text: item.msg, position: 'top', duration: 5000});
 
         // cusToast('휴대폰으로 인증번호가 발송 되었습니다.');
-        cusToast(responseJson.msg, '', '', '', 5000);
+        cusToast(responseJson.msg, '', '', '', 2000);
         setIsSend(true); //문자 발송처리
 
         set_mt_hp_check(false); //인증 실패로

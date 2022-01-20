@@ -20,7 +20,7 @@ import {style} from './FreeBoardEnrollStyle';
 import {connect, useDispatch} from 'react-redux';
 import Api, {NodataView, Loaders} from '~/Api';
 import cusToast from '~/Components/CusToast';
-import {FilePick3} from '~/shared/FilePick';
+import {FilePick3 as FilePick} from '~/shared/FilePick';
 
 function FreeBoardEnroll({navigation, route, mt_idx}) {
   const [idx, setIdx] = useState(
@@ -37,7 +37,19 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
 
   useEffect(() => {
     if (idx) getData();
+
+    contLoad();
   }, [idx]);
+
+  const [cont, setCont] = useState('');
+
+  const contLoad = () => {
+    Api.send('proc_list_content', {co_id: '5'}, (responseJson) => {
+      if (responseJson.result == 'Y') {
+        setCont(responseJson.item.co_content);
+      }
+    });
+  };
 
   const _submit = () => {
     if (!nt_title) {
@@ -104,6 +116,9 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
       />
       <ScrollView bounces={false}>
         <View style={style.section}>
+          <Text style={style.subTitle}>{cont}</Text>
+        </View>
+        <View style={style.section}>
           <Text style={style.title}>글 제목</Text>
           <TextInput
             style={style.input}
@@ -115,7 +130,15 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
         <View style={style.section}>
           <Text style={style.title}>글 내용</Text>
           <TextInput
-            style={[style.input, {textAlignVertical: 'top', minHeight: 200}]}
+            style={[
+              style.input,
+              {
+                height: 'auto',
+                textAlignVertical: 'top',
+                minHeight: 150,
+                lineHeight: 20,
+              },
+            ]}
             placeholder="내용을 입력해주세요."
             multiline
             value={nt_content}
@@ -128,6 +151,7 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
         <ScrollView
           horizontal
           bounces={false}
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{paddingHorizontal: 20}}>
           {/* <TouchableOpacity style={[style.image, {backgroundColor: '#F5F5F5'}]}>
             <Icon name="plus" color={'#999999'} size={32} />
@@ -138,7 +162,7 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
             ? ck_img1.map((element, index) => {
                 // console.log(element);
                 return (
-                  <FilePick3
+                  <FilePick
                     key={index}
                     index={element.id}
                     file={element}
@@ -152,7 +176,7 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
             : null}
 
           {ck_img1.length < 3 ? (
-            <FilePick3
+            <FilePick
               key={ck_img1.length}
               index={ck_img1.length}
               file={''}

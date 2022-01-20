@@ -4,7 +4,7 @@ import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {ColorWhite} from '~/style/Color';
 
-function ImageCard({item, removeHandle, popup, navigation, key}) {
+function ImageCard({item, removeHandle, popup, navigation, keys}) {
   const onPressGallery = (uri) => {
     navigation.navigate('GalleryDetail', {
       total: 1,
@@ -24,7 +24,7 @@ function ImageCard({item, removeHandle, popup, navigation, key}) {
         marginRight: 10,
         overflow: 'hidden',
       }}
-      key={'imgage_key_' + key ? key : item.id}>
+      key={'image_key_' + keys ? keys : item.id}>
       <TouchableOpacity
         style={{width: '100%', height: '100%'}}
         disabled={!popup}

@@ -143,7 +143,9 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
             alignItems: 'center',
             // height: 85,
             width: '100%',
-            height: 85,
+            // height: 85,
+            justifyContent: 'center',
+            // backgroundColor: 'red',
           }}>
           <ModalSelector
             data={minute_option}
@@ -153,21 +155,26 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
             cancelText={'취소'}
             cancelButtonAccessibilityLabel={'취소'}
             // style={}
-            selectStyle={{position: 'relative', width: 130}}
+            style={{width: 120, height: '100%'}}
+            selectStyle={{position: 'relative'}}
             onChange={(option) => {
               setSearchTypeValue(option.value);
+              setSearchType(option.label);
             }}>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                paddingVertical: 11,
+                // paddingVertical: 11,
+
                 paddingHorizontal: 15,
                 borderWidth: 1,
                 borderRadius: 5,
                 borderColor: '#E3E3E3',
                 marginRight: 5,
                 justifyContent: 'space-between',
+                width: 120,
+                height: 45,
               }}>
               <Text
                 style={{
@@ -183,7 +190,8 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
           <View
             style={{
               flex: 1,
-              paddingVertical: Platform.OS == 'android' ? 0 : 10,
+              marginLeft: 5,
+              // paddingVertical: Platform.OS == 'android' ? 0 : 9,
               paddingHorizontal: 15,
               flexDirection: 'row',
               alignItems: 'center',
@@ -194,6 +202,7 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
             <TextInput
               style={{
                 flex: 1,
+                height: 43,
                 fontFamily: FontPretendardRegular,
               }}
               value={searchText}

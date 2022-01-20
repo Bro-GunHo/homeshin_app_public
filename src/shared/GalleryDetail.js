@@ -58,13 +58,20 @@ export function Detail_info(props) {
   };
 
   return (
-    <View style={{width: '100%', height: deviceHeight}}>
+    <View
+      style={{
+        // flex: 1,
+        width: '100%',
+        height: deviceHeight,
+      }}>
       <ImageViewer
         renderIndicator={() => <></>}
         imageUrls={item}
         index={props.galleryIndex}
-        // onSwipeDown={() => props.navigation.goBack()}
-        // enableSwipeDown={true}
+        onSwipeDown={() => props.navigation.goBack()}
+        enableSwipeDown={true}
+        // width={Dimensions.get('window').width}
+        // height={deviceHeight}
         // renderHeader={() => <View></View>}
       />
       <TouchableOpacity

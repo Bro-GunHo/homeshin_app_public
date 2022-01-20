@@ -22,14 +22,20 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DatePickerModal from '~/Components/DatePickerModal';
 
 var arr = [];
-for (var i = 6; i < 24; i++) {
-  var arr_str = i + ':00';
+for (var i = 9; i < 18; i++) {
+  var arr_str = i.toString();
   if (i < 10) {
-    arr_str = '0' + i + ':00';
+    arr_str = '0' + i;
   }
   arr.push({key: i, label: arr_str, value: arr_str});
 }
-const minute_option = arr;
+const hour_option = arr;
+
+let arr2 = [
+  {key: '0_min', label: '00', value: '00'},
+  {key: '1_min', label: '30', value: '30'},
+];
+const minute_option = arr2;
 
 function InspectionEdit({navigation, route, mt_idx, mt_name}) {
   const [inspectType, setInspectType] = useState(1);
@@ -45,7 +51,9 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
     mt_house_size: '',
     mt_house_size2: '',
     check_day: '',
-    check_time: '',
+    // check_time: '',
+    check_time_hour: '',
+    check_time_min: '',
   });
 
   const setCheck_dy = (v) => {
@@ -82,7 +90,9 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
         }
 
         item.check_day = item.check_dt_day;
-        item.check_time = item.check_dt_hour;
+        let temp_arr = item.check_dt_hour.split(':');
+        item.check_time_hour = temp_arr[0];
+        item.check_time_min = temp_arr[1];
         setSendData(item);
         setInspectType(newOption);
         // console.log('@@', responseJson.item.project_data[0]);
@@ -103,8 +113,12 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
       return false;
     }
 
-    if (!sendData.check_time) {
-      cusToast('점검시간을 선택해주세요.');
+    if (!sendData.check_time_hour) {
+      cusToast('작업시간을 입력해주세요.');
+      return false;
+    }
+    if (!sendData.check_time_min) {
+      cusToast('작업시간 분을 입력해주세요.');
       return false;
     }
 
@@ -112,7 +126,12 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
       mt_idx: mt_idx,
       pr_idx: pr_idx,
       pr_option: new_pr_option,
-      check_dt: sendData.check_day + ' ' + sendData.check_time,
+      check_dt:
+        sendData.check_day +
+        ' ' +
+        sendData.check_time_hour +
+        ':' +
+        sendData.check_time_min,
     };
 
     Api.send('proc_project_edit', sendObj, (responseJson) => {
@@ -205,7 +224,37 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
 
           <View style={style.section}>
             <Text style={style.title}>작업시간</Text>
-            <View style={[style.wrapper, {alignItems: 'flex-end'}]}>
+            <View
+              style={[
+                style.wrapper,
+                {alignItems: 'center', justifyContent: 'space-between'},
+              ]}>
+              <ModalSelector
+                data={hour_option}
+                initValue="시간 선택"
+                accessible={true}
+                backdropPressToClose={true}
+                cancelText={'취소'}
+                cancelButtonAccessibilityLabel={'취소'}
+                style={{flex: 1, position: 'relative'}}
+                onChange={(option) => {
+                  // console.log('option', option);
+                  setParams('check_time_hour', option.label);
+                }}>
+                <View
+                  style={[style.inputBox, {justifyContent: 'space-between'}]}>
+                  <TextInput
+                    placeholder="시간 선택"
+                    placeholderTextColor="#A2A2A2"
+                    style={[style.input, {flex: 1, textAlign: 'center'}]}
+                    editable={false}
+                    value={sendData.check_time_hour}
+                    pointerEvents={'none'}
+                  />
+                  {/* <Icon name="clock-time-three-outline" size={20} /> */}
+                </View>
+              </ModalSelector>
+              <Text style={{width: 15, textAlign: 'center'}}>:</Text>
               <ModalSelector
                 data={minute_option}
                 initValue="시간 선택"
@@ -215,19 +264,19 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
                 cancelButtonAccessibilityLabel={'취소'}
                 style={{flex: 1, position: 'relative'}}
                 onChange={(option) => {
-                  setParams('check_time', option.label);
+                  setParams('check_time_min', option.label);
                 }}>
                 <View
                   style={[style.inputBox, {justifyContent: 'space-between'}]}>
                   <TextInput
-                    placeholder="시간 선택"
+                    placeholder="분 선택"
                     placeholderTextColor="#A2A2A2"
-                    style={style.input}
+                    style={[style.input, {flex: 1, textAlign: 'center'}]}
                     editable={false}
-                    value={sendData.check_time}
+                    value={sendData.check_time_min}
                     pointerEvents={'none'}
                   />
-                  <Icon name="clock-time-three-outline" size={20} />
+                  {/* <Icon name="clock-time-three-outline" size={20} /> */}
                 </View>
               </ModalSelector>
             </View>

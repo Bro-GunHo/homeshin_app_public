@@ -17,17 +17,20 @@ import CustomButton from '~/Components/CustomButton';
 import DefaultHeader from '~/Components/DefaultHeader';
 import {ColorRed, ColorWhite} from '~/style/Color';
 import {style} from './FreeBoardDetailStyle';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import Api, {NodataView, Loaders} from '~/Api';
 import cusToast from '~/Components/CusToast';
 import Icon from 'react-native-vector-icons/AntDesign';
 import ImageCard from '~/Components/ImageCard';
+import CustomModalReport from '~/Components/CustomModalReport';
 function FreeBoardDetail({navigation, route, mt_idx}) {
   const [data, setData] = useState({});
   const [commentData, setCommentData] = useState([]);
   const [idx, setIdx] = useState(
     route.params && route.params.idx ? route.params.idx : '',
   );
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [nt_answer, setNt_answer] = useState('');
 
@@ -125,6 +128,36 @@ function FreeBoardDetail({navigation, route, mt_idx}) {
     ]);
   };
 
+  const _report = (report_type) => {
+    Alert.alert('신고하시겠습니까?', '', [
+      {text: '취소'},
+      {
+        text: '확인',
+        onPress: () => {
+          Api.send(
+            'proc_board_report_write',
+            {
+              mt_idx: mt_idx,
+              report_type: report_type,
+              cont: data.nt_content,
+              nt_idx: data.idx,
+              target_mt_idx: data.mt_idx,
+              board_type: 'board_qna',
+              is_comment: 'N',
+            },
+            (responseJson) => {
+              if (responseJson.result == 'Y') {
+                Alert.alert('신고가 접수되었습니다.', '', [
+                  {text: '확인', onPress: () => navigation.goBack()},
+                ]);
+              }
+            },
+          );
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView style={style.container}>
       <DefaultHeader
@@ -144,7 +177,7 @@ function FreeBoardDetail({navigation, route, mt_idx}) {
               ]}>
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <View>
+                <View style={{flex: 1}}>
                   <Text style={style.title}>{data.nt_title}</Text>
                   <View
                     style={{
@@ -162,11 +195,24 @@ function FreeBoardDetail({navigation, route, mt_idx}) {
                     </Text>
                   </View>
                 </View>
-                {mt_idx == data.mt_idx ? (
-                  <TouchableOpacity onPress={() => _delete()}>
-                    <Icon name="delete" size={20} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    // paddingHorizontal: 5,
+                  }}>
+                  {mt_idx == data.mt_idx ? (
+                    <TouchableOpacity onPress={() => _delete()}>
+                      <Icon name="delete" size={20} />
+                    </TouchableOpacity>
+                  ) : null}
+
+                  <TouchableOpacity
+                    onPress={() => setModalOpen(true)}
+                    style={{marginLeft: 10}}>
+                    <Icon name="Safety" size={20} />
                   </TouchableOpacity>
-                ) : null}
+                </View>
               </View>
             </View>
             <View style={[style.section, {minHeight: 200}]}>
@@ -192,6 +238,7 @@ function FreeBoardDetail({navigation, route, mt_idx}) {
                     // console.log('nt_file_arr22', item);
                     return (
                       <ImageCard
+                        keys={index.toString()}
                         item={item}
                         removeHandle={false}
                         navigation={navigation}
@@ -258,6 +305,7 @@ function FreeBoardDetail({navigation, route, mt_idx}) {
                 );
               })
             : null}
+
           {/* <FlatList
         data={commentData}
         bounces={false}
@@ -269,6 +317,16 @@ function FreeBoardDetail({navigation, route, mt_idx}) {
         )}
       /> */}
         </ScrollView>
+
+        <CustomModalReport
+          visible={modalOpen}
+          setVisible={setModalOpen}
+          title={'신고하기'}
+          subTitle={'신고하시는 이유를 알려 주세요'}
+          cancelAction={_report}
+          // confirmAction={aptSelect}
+          closeAction={() => setModalOpen(false)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

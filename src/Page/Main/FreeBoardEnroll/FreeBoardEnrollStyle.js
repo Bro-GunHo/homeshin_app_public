@@ -16,7 +16,13 @@ export const style = StyleSheet.create({
     fontSize: 15,
     marginBottom: 5,
   },
+  subTitle: {
+    fontFamily: FontPretendardRegular,
+    fontSize: 13,
+    color: '#999999',
+  },
   input: {
+    height: 55,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 5,

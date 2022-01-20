@@ -23,6 +23,26 @@ export const style = StyleSheet.create({
     fontSize: 15,
     marginBottom: 10,
   },
+  titleReq: {
+    fontFamily: FontPretendardBold,
+    fontSize: 15,
+    marginBottom: 5,
+    color: ColorRed,
+    marginLeft: 3,
+  },
+  titleFree: {
+    fontFamily: FontPretendardBold,
+    fontSize: 15,
+    marginBottom: 5,
+    color: ColorBlack,
+    marginLeft: 3,
+  },
+  textBox: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+
   error: {
     fontFamily: FontPretendardRegular,
     fontSize: 14,

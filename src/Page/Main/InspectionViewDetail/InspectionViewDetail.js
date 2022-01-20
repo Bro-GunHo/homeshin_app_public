@@ -122,7 +122,11 @@ function InspectionViewDetail({navigation, route, mt_idx, mt_level}) {
             keyExtractor={(item) => `item-${item.idx}`}
             ListHeaderComponent={
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
                 <Text style={style.title}>
                   <Text style={{color: ColorRed}}>사안별 하자</Text> 목록
                 </Text>
@@ -166,7 +170,11 @@ function InspectionViewDetail({navigation, route, mt_idx, mt_level}) {
             }
             ListHeaderComponent={
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
                 <Text style={style.title}>
                   <Text style={{color: ColorRed}}>화학물질 검출</Text> 수준
                 </Text>

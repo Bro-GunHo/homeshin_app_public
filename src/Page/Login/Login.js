@@ -70,7 +70,7 @@ function Login({navigation}) {
         </View>
         <View style={{paddingHorizontal: 20}}>
           <CustomButton
-            label="완료"
+            label="선택"
             labelColor={ColorWhite}
             backgroundColor={ColorRed}
             borderRadius={5}

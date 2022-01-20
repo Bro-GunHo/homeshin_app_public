@@ -229,7 +229,9 @@ function DatePickerModal({visible, setVisible, setValue, value, type}) {
                             {
                               color:
                                 deepitem.type === 'now'
-                                  ? deepindex === 0
+                                  ? dayjs(deepitem.ymd, 'YYYY-MM-DD') <= minDate
+                                    ? '#A2A2A2'
+                                    : deepindex === 0
                                     ? '#FF0000'
                                     : deepindex === 6
                                     ? '#0060EE'

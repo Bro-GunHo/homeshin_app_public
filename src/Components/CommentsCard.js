@@ -6,9 +6,9 @@ import {connect, useDispatch} from 'react-redux';
 import Api, {NodataView, Loaders} from '~/Api';
 import cusToast from '~/Components/CusToast';
 
-function CommentsCard({data, mt_idx, mt_name, _delete}) {
+function CommentsCard({data, mt_idx, mt_name, _delete, key}) {
   return (
-    <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
+    <View style={{paddingHorizontal: 20, paddingVertical: 10}} key={key}>
       <View
         style={{
           flexDirection: 'row',
@@ -30,7 +30,7 @@ function CommentsCard({data, mt_idx, mt_name, _delete}) {
               fontFamily: FontPretendardRegular,
               fontSize: 14,
               color: '#9E9E9E',
-              marginLeft: 5,
+              marginLeft: 10,
             }}>
             {data.ins_dt_str}
           </Text>

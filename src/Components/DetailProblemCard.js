@@ -120,6 +120,7 @@ function DetailProblemCard({item, navigation, mt_idx, mt_level, refresh}) {
               source={{uri: item.ck_img1_big}}
               style={{
                 height: 100,
+                borderRadius: 5,
                 // width: Dimensions.get('screen').width - 40,
                 width: 100,
               }}
@@ -142,6 +143,7 @@ function DetailProblemCard({item, navigation, mt_idx, mt_level, refresh}) {
               style={{
                 height: 100,
                 width: 100,
+                borderRadius: 5,
               }}
               resizeMode={'contain'}
             />

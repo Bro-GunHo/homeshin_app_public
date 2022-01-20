@@ -9,6 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
+  FlatList,
+  LogBox,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BackButton from '~/Components/BackButton';
@@ -21,23 +25,34 @@ import {style} from './InspectionApplyStyle';
 import CustomModalApt from '~/Components/CustomModalApt';
 import ModalSelector from 'react-native-modal-selector';
 import cusToast from '~/Components/CusToast';
+import Api from '~/Api';
 
 var arr = [];
-for (var i = 6; i < 24; i++) {
-  var arr_str = i + ':00';
+for (var i = 9; i < 18; i++) {
+  var arr_str = i.toString();
   if (i < 10) {
-    arr_str = '0' + i + ':00';
+    arr_str = '0' + i;
   }
   arr.push({key: i, label: arr_str, value: arr_str});
 }
-const minute_option = arr;
+const hour_option = arr;
+
+let arr2 = [
+  {key: '0_min', label: '00', value: '00'},
+  {key: '1_min', label: '30', value: '30'},
+];
+const minute_option = arr2;
 
 function InspectionApply({navigation}) {
+  // useEffect(() => {
+  //   LogBox.ignoreWarnings(['VirtualizedLists should never be nested']);
+  // }, []);
+
   const [picker, setPicker] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   //serach or direct
-  const [aptInputMode, setAptInputMode] = useState('search');
+  const [aptInputMode, setAptInputMode] = useState('direct');
   const [sendData, setSendData] = useState({
     tb_idx: '',
     tb_addr: '',
@@ -47,11 +62,15 @@ function InspectionApply({navigation}) {
     mt_house_size: '',
     mt_house_size2: '',
     check_day: '',
-    check_time: '',
+    check_time_hour: '',
+    check_time_min: '',
   });
 
+  const [data, setData] = useState([]);
+  const [isSearched, setIsSearched] = useState(false);
+
   const setParams = (key, value) => {
-    console.log(sendData, key, value);
+    // console.log(sendData, key, value);
     setSendData({...sendData, [key]: value});
   };
 
@@ -63,6 +82,7 @@ function InspectionApply({navigation}) {
     setAptInputMode('search');
     setSendData({...sendData, tb_idx, mt_house_name, tb_addr});
     setModalOpen(false);
+    setIsSearched(false);
   };
   const closeAction = () => {
     setModalOpen(false);
@@ -71,7 +91,7 @@ function InspectionApply({navigation}) {
   const searchMode = () => {};
 
   const setCheck_dy = (v) => {
-    console.log('setCheck_dy, check_day', v);
+    // console.log('setCheck_dy, check_day', v);
     setParams('check_day', v);
   };
 
@@ -100,12 +120,37 @@ function InspectionApply({navigation}) {
       cusToast('날짜를 입력해주세요.');
       return false;
     }
-    if (!sendData.check_time) {
-      cusToast('시간을 입력해주세요.');
+    if (!sendData.check_time_hour) {
+      cusToast('작업시간을 입력해주세요.');
+      return false;
+    }
+    if (!sendData.check_time_min) {
+      cusToast('작업시간 분을 입력해주세요.');
       return false;
     }
 
     navigation.navigate('InspectionApply2', {sendData});
+  };
+
+  const _search = () => {
+    Keyboard.dismiss();
+    if (!sendData.mt_house_name) {
+      cusToast('아파트 이름을 입력해주세요.');
+      return false;
+    }
+
+    Api.send(
+      'proc_building_list',
+      {tb_name: sendData.mt_house_name, is_modal: 1000},
+      (responseJson) => {
+        if (responseJson.result == 'Y') {
+          setData(responseJson.item);
+          setIsSearched(true);
+        } else {
+          Alert.alert(responseJson.msg);
+        }
+      },
+    );
   };
 
   useEffect(() => {}, []);
@@ -124,32 +169,28 @@ function InspectionApply({navigation}) {
           style={{flex: 1}}
           contentContainerStyle={{padding: 20}}
           bounces={false}>
-          <View style={style.section}>
+          {/* <View style={style.section}>
             <Text style={[style.title, {fontSize: 24}]}>
               <Text style={{color: ColorRed}}>점검 기간</Text> 선택
             </Text>
-          </View>
+          </View> */}
           <View style={style.section}>
-            <Text style={style.title}>아파트명</Text>
+            <View style={style.textBox}>
+              <Text style={style.title}>아파트명</Text>
+              <Text style={style.titleReq}>*</Text>
+            </View>
+
             <View style={style.wrapper}>
               <View style={[style.inputBox, {marginRight: 10}]}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (aptInputMode != 'direct') setModalOpen(true);
-                  }}
-                  style={{flex: 1}}>
-                  <TextInput
-                    placeholder="아파트명 입력"
-                    placeholderTextColor="#A2A2A2"
-                    style={style.input}
-                    value={sendData.mt_house_name}
-                    editable={aptInputMode == 'direct'}
-                    onChangeText={(text) => setParams('mt_house_name', text)}
-                    pointerEvents={
-                      aptInputMode == 'direct' ? 'box-only' : 'none'
-                    }
-                  />
-                </TouchableOpacity>
+                <TextInput
+                  placeholder="아파트명 입력"
+                  placeholderTextColor="#A2A2A2"
+                  style={style.input}
+                  value={sendData.mt_house_name}
+                  editable={aptInputMode == 'direct'}
+                  onChangeText={(text) => setParams('mt_house_name', text)}
+                  // pointerEvents={aptInputMode == 'direct' ? 'box-only' : 'none'}
+                />
               </View>
               <CustomButton
                 label={'검색'}
@@ -159,53 +200,92 @@ function InspectionApply({navigation}) {
                 backgroundColor={ColorWhite}
                 borderRadius={5}
                 flex={0.3}
-                onPress={() => setModalOpen(true)}
+                onPress={() => _search()}
               />
             </View>
-          </View>
-          <View style={style.section}>
-            <Text style={style.title}>아파트 주소</Text>
-            <View style={style.wrapper}>
-              <TouchableOpacity
-                onPress={() => {
-                  console.log('aptInputMode', aptInputMode);
-                  if (aptInputMode != 'direct') setModalOpen(true);
-                }}
-                style={{flex: 1}}>
-                <View
-                  style={[
-                    style.inputBox,
-                    {height: 'auto', paddingVertical: 5},
-                  ]}>
-                  <TextInput
-                    placeholder="아파트 주소 입력"
-                    placeholderTextColor="#A2A2A2"
-                    style={[
-                      style.input,
-                      {
-                        justifyContent: 'flex-start',
-                        // backgroundColor: 'red',
-                        // paddingVertical: 0,
-                        height: 65,
-                      },
-                    ]}
-                    value={sendData.tb_addr}
-                    editable={aptInputMode == 'direct'}
-                    multiline={true}
-                    numberOfLines={3}
-                    textAlignVertical={'top'}
-                    onChangeText={(text) => setParams('tb_addr', text)}
-                    pointerEvents={
-                      aptInputMode == 'direct' ? 'box-only' : 'none'
+
+            <ScrollView
+              style={
+                isSearched && data.length
+                  ? {
+                      maxHeight: 400,
+                      borderColor: '#E2E2E2',
+                      borderWidth: 1,
+                      marginTop: 5,
                     }
-                  />
-                </View>
-              </TouchableOpacity>
+                  : null
+              }>
+              {isSearched ? (
+                data.length ? (
+                  data.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        style={{
+                          borderColor: '#E2E2E2',
+                          borderBottomWidth: data.length == index + 1 ? 0 : 1,
+                          // borderLeftWidth: 1,
+                          // borderRightWidth: 1,
+                          padding: 10,
+                        }}
+                        key={'search_result_' + item.idx.toString()}
+                        onPress={() =>
+                          aptSelect(item.idx, item.tb_name, item.tb_addr)
+                        }>
+                        <View>
+                          <Text style={style.listTitle}>{item.tb_name}</Text>
+                          <Text style={style.listSubTitle}>{item.tb_addr}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })
+                ) : (
+                  <Text style={style.error}>
+                    검색하신 아파트 정보가 없습니다.
+                  </Text>
+                )
+              ) : null}
+            </ScrollView>
+          </View>
+
+          <View style={style.section}>
+            <View style={style.textBox}>
+              <Text style={style.title}>아파트 주소</Text>
+              <Text style={style.titleReq}>*</Text>
+            </View>
+
+            <View style={style.wrapper}>
+              <View
+                style={[style.inputBox, {height: 'auto', paddingVertical: 5}]}>
+                <TextInput
+                  placeholder="아파트 주소 입력"
+                  placeholderTextColor="#A2A2A2"
+                  style={[
+                    style.input,
+                    {
+                      justifyContent: 'flex-start',
+                      // backgroundColor: 'red',
+                      // paddingVertical: 0,
+                      height: 65,
+                    },
+                  ]}
+                  value={sendData.tb_addr}
+                  editable={aptInputMode == 'direct'}
+                  multiline={true}
+                  numberOfLines={3}
+                  textAlignVertical={'top'}
+                  onChangeText={(text) => setParams('tb_addr', text)}
+                  // pointerEvents={aptInputMode == 'direct' ? 'box-only' : 'none'}
+                />
+              </View>
             </View>
           </View>
           <View style={[style.section, {flexDirection: 'row'}]}>
             <View style={{flex: 1}}>
-              <Text style={style.title}>동</Text>
+              <View style={style.textBox}>
+                <Text style={style.title}>동</Text>
+                <Text style={style.titleReq}>*</Text>
+              </View>
+
               <View style={style.wrapper}>
                 <View style={[style.inputBox, {marginRight: 10}]}>
                   <TextInput
@@ -220,7 +300,11 @@ function InspectionApply({navigation}) {
               </View>
             </View>
             <View style={{flex: 1}}>
-              <Text style={style.title}>호수</Text>
+              <View style={style.textBox}>
+                <Text style={style.title}>호수</Text>
+                <Text style={style.titleReq}>*</Text>
+              </View>
+
               <View style={style.wrapper}>
                 <View style={style.inputBox}>
                   <TextInput
@@ -236,7 +320,11 @@ function InspectionApply({navigation}) {
             </View>
           </View>
           <View style={style.section}>
-            <Text style={style.title}>공급면적(선택)</Text>
+            <View style={style.textBox}>
+              <Text style={style.title}>공급면적(선택)</Text>
+              <Text style={style.titleFree}>*</Text>
+            </View>
+
             <View style={[style.wrapper, {alignItems: 'flex-end'}]}>
               <View style={[style.inputBox, {marginRight: 10}]}>
                 <TextInput
@@ -255,7 +343,11 @@ function InspectionApply({navigation}) {
             </View>
           </View>
           <View style={style.section}>
-            <Text style={style.title}>전용면적(선택)</Text>
+            <View style={style.textBox}>
+              <Text style={style.title}>전용면적(선택)</Text>
+              <Text style={style.titleFree}>*</Text>
+            </View>
+
             <View style={[style.wrapper, {alignItems: 'flex-end'}]}>
               <View style={[style.inputBox, {marginRight: 10}]}>
                 <TextInput
@@ -274,7 +366,11 @@ function InspectionApply({navigation}) {
             </View>
           </View>
           <View style={style.section}>
-            <Text style={style.title}>작업희망날짜</Text>
+            <View style={style.textBox}>
+              <Text style={style.title}>작업희망날짜</Text>
+              <Text style={style.titleReq}>*</Text>
+            </View>
+
             <TouchableOpacity
               style={[style.wrapper, {alignItems: 'flex-end'}]}
               onPress={() => setPicker(true)}>
@@ -292,8 +388,42 @@ function InspectionApply({navigation}) {
             </TouchableOpacity>
           </View>
           <View style={style.section}>
-            <Text style={style.title}>작업시간</Text>
-            <View style={[style.wrapper, {alignItems: 'flex-end'}]}>
+            <View style={style.textBox}>
+              <Text style={style.title}>작업시간</Text>
+              <Text style={style.titleReq}>*</Text>
+            </View>
+
+            <View
+              style={[
+                style.wrapper,
+                {alignItems: 'center', justifyContent: 'space-between'},
+              ]}>
+              <ModalSelector
+                data={hour_option}
+                initValue="시간 선택"
+                accessible={true}
+                backdropPressToClose={true}
+                cancelText={'취소'}
+                cancelButtonAccessibilityLabel={'취소'}
+                style={{flex: 1, position: 'relative'}}
+                onChange={(option) => {
+                  // console.log('option', option);
+                  setParams('check_time_hour', option.label);
+                }}>
+                <View
+                  style={[style.inputBox, {justifyContent: 'space-between'}]}>
+                  <TextInput
+                    placeholder="시간 선택"
+                    placeholderTextColor="#A2A2A2"
+                    style={[style.input, {textAlign: 'center'}]}
+                    editable={false}
+                    value={sendData.check_time_hour}
+                    pointerEvents={'none'}
+                  />
+                  {/* <Icon name="clock-time-three-outline" size={20} /> */}
+                </View>
+              </ModalSelector>
+              <Text style={{width: 15, textAlign: 'center'}}>:</Text>
               <ModalSelector
                 data={minute_option}
                 initValue="시간 선택"
@@ -303,19 +433,19 @@ function InspectionApply({navigation}) {
                 cancelButtonAccessibilityLabel={'취소'}
                 style={{flex: 1, position: 'relative'}}
                 onChange={(option) => {
-                  setParams('check_time', option.label);
+                  setParams('check_time_min', option.label);
                 }}>
                 <View
                   style={[style.inputBox, {justifyContent: 'space-between'}]}>
                   <TextInput
-                    placeholder="시간 선택"
+                    placeholder="분 선택"
                     placeholderTextColor="#A2A2A2"
-                    style={style.input}
+                    style={[style.input, {textAlign: 'center'}]}
                     editable={false}
-                    value={sendData.check_time}
+                    value={sendData.check_time_min}
                     pointerEvents={'none'}
                   />
-                  <Icon name="clock-time-three-outline" size={20} />
+                  {/* <Icon name="clock-time-three-outline" size={20} /> */}
                 </View>
               </ModalSelector>
             </View>

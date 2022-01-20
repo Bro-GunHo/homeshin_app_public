@@ -22,7 +22,9 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
     mt_house_size: '',
     mt_house_size2: '',
     check_day: '',
-    check_time: '',
+    // check_time: '',
+    check_time_hour: '',
+    check_time_min: '',
   });
 
   useEffect(() => {
@@ -47,7 +49,12 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
         sendData.mt_house_dong + '동 ' + sendData.mt_house_ho + '호',
       mt_house_size: sendData.mt_house_size,
       mt_house_size2: sendData.mt_house_size2,
-      check_dt: sendData.check_day + ' ' + sendData.check_time,
+      check_dt:
+        sendData.check_day +
+        ' ' +
+        sendData.check_time_hour +
+        ':' +
+        sendData.check_time_min,
     };
 
     Api.send('proc_project_write', sendObj, (responseJson) => {
@@ -129,7 +136,8 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
             {sendData.mt_house_size2 ? sendData.mt_house_size2 + '㎡' : ''}
           </Text>
           <Text style={style.subTitle}>
-            점검일시 : {sendData.check_day} {sendData.check_time}
+            점검일시 : {sendData.check_day} {sendData.check_time_hour}:
+            {sendData.check_time_min}
           </Text>
           <Text style={style.subTitle}>
             {inspectType === 1

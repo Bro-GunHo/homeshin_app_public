@@ -31,9 +31,9 @@ function FilePick(props) {
 
   // console.log('props.file', props.file);
   const pickSingle = (index, mode) => {
-    console.log('rrr');
+    // console.log('rrr');
     ImagePicker.openPicker({
-      cropping: true,
+      cropping: false,
       sortOrder: 'asc',
       compressImageMaxWidth: 1000,
       compressImageMaxHeight: 1000,
@@ -93,7 +93,7 @@ function FilePick(props) {
   const CameraSingle = (index, mode) => {
     console.log('camera!!!');
     ImagePicker.openCamera({
-      cropping: true,
+      cropping: false,
       cropperCircleOverlay: false,
       sortOrder: 'asc',
       compressImageMaxWidth: 1000,
@@ -189,6 +189,7 @@ function FilePick(props) {
           <ImageCard
             item={props.file}
             removeHandle={() => removeHandle(props.index)}
+            keys={props.index.toString()}
           />
           {/* </TouchableOpacity> */}
           {/* </ModalSelector> */}
@@ -505,7 +506,7 @@ export const FilePick3 = (props) => {
   const pickSingle = (index) => {
     // console.log('FilePick3', index);
     ImagePicker.openPicker({
-      cropping: true,
+      cropping: false,
       sortOrder: 'asc',
       compressImageMaxWidth: 1000,
       compressImageMaxHeight: 1000,
@@ -517,8 +518,8 @@ export const FilePick3 = (props) => {
       waitAnimationEnd: false,
       forceJpg: true,
       showCropFrame: true,
-      multiple: true,
-      maxFiles: 3,
+      multiple: false,
+      maxFiles: 1,
     })
       .then(async (images) => {
         // if (images.length > 1) {
@@ -526,6 +527,7 @@ export const FilePick3 = (props) => {
         //   await props.setPopup(true);
         //   return;
         // }
+        images = new Array(images);
         const mt_photo = {
           id: props.index,
           uri:
