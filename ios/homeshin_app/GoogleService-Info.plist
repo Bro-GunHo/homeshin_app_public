@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1013560534616-p94odiftfdmkt0vc6erg5shd5gu8av5f.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1013560534616-p94odiftfdmkt0vc6erg5shd5gu8av5f</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAOQApFF31Rp27h_MD58s7g1gg-7fDrX40</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1013560534616</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.dmonster.homeshin</string>
+	<key>PROJECT_ID</key>
+	<string>homeshin-e31e5</string>
+	<key>STORAGE_BUCKET</key>
+	<string>homeshin-e31e5.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1013560534616:ios:ff71e7abf1b3e83d3f8c2d</string>
+</dict>
+</plist>

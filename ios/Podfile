@@ -1,26 +1,54 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
-platform :ios, '10.0'
+
+platform :ios, '11.0'
 
 target 'homeshin_app' do
   config = use_native_modules!
 
-  use_react_native!(:path => config["reactNativePath"])
-
-  target 'homeshin_appTests' do
-    inherit! :complete
-    # Pods for testing
-  end
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :hermes_enabled => false
+  )
 
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!
+  # use_flipper!
+
+  pod 'react-native-blob-util', :path => '../node_modules/react-native-blob-util'
+
   post_install do |installer|
     flipper_post_install(installer)
+    installer.pods_project.targets.each do |target|
+      if target.name == "React-Core.common-AccessibilityResources"
+        target.remove_from_project
+      end
+    end
   end
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  # pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
+
+
+
+
+  # pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
+
+
+end
+
+target 'homeshin_appTests' do
+  inherit! :complete
+  # Pods for testing
 end
 
 target 'homeshin_app-tvOS' do

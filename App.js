@@ -1,114 +1,115 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {StatusBar, View, Platform, BackHandler, LogBox} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import Navigator from '~/Navigation/Navigator';
+import {Provider} from 'react-redux';
+import initStore from './src/redux/store';
+import SplashScreen from 'react-native-splash-screen';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import Toast from 'react-native-toast-message';
+import {MyText} from '~/shared/MyComponent';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+  handleAndroidBackButton,
+  handleBackButton,
+  removeAndroidBackButtonHandler,
+} from '~/shared/AndroidBackButton';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const store = initStore();
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+class App extends React.Component {
+  componentDidMount() {
+    // LogBox.ignoreLogs([
+    //   'If you want to use Reanimated 2 then go through',
+    //   'Non-serializable values were found in the navigation state',
+    //   'VirtualizedLists should never be nested',
+    // ]);
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+    // setTimeout(() => {
+    //   SplashScreen.hide();
+    // }, 1200);
+
+    // if (Platform.OS === 'ios') {
+    //   PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    // }
+
+    //SplashScreen.hide();
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+  }
+
+  // 이벤트 해제
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+  }
+
+  toastConfig = {
+    custom_type: (internalState) => (
+      <View
+        style={{
+          width: '90%',
+          backgroundColor: '#000000e0',
+          borderRadius: 50,
+          paddingHorizontal: 16,
+          paddingVertical: 17,
+        }}>
+        <MyText style={{textAlign: 'center', color: '#fff', fontSize: 11.5}}>
+          {internalState.text1}
+        </MyText>
+      </View>
+    ),
+    push: ({text1, text2, props}) => (
+      <TouchableOpacity
+        style={[
+          styles.btn_st0,
+          {
+            width: Dimensions.get('window').width - 40,
+            backgroundColor: '#fff',
+            paddingHorizontal: 24,
+            paddingVertical: 30,
+            marginTop: 46,
+            borderColor: '#B71D22',
+            zIndex: 9,
+          },
+        ]}
+        onPress={props.onPress ? props.onPress : null}
+        activeOpacity={1}>
+        {text1 ? (
+          <MyText
+            style={{
+              color: '#000',
+              fontSize: 15,
+              fontWeight: 'bold',
+              lineHeight: 18,
+            }}>
+            {text1}
+          </MyText>
+        ) : null}
+        {text1 && text2 ? <View style={{marginBottom: 2}} /> : null}
+        {text2 ? (
+          <MyText style={{color: '#000', fontSize: 14, lineHeight: 18}}>
+            {text2}
+          </MyText>
+        ) : null}
+      </TouchableOpacity>
+    ),
+  };
+  render() {
+    return (
+      <Provider store={store}>
+        <View style={{backgroundColor: '#fff', flex: 1}}>
+          <StatusBar
+            barStyle={
+              Platform.OS == 'android' ? 'light-content' : 'dark-content'
+            }
+          />
+          <NavigationContainer>
+            <Navigator />
+          </NavigationContainer>
+          <Toast config={this.toastConfig} ref={(ref) => Toast.setRef(ref)} />
+        </View>
+      </Provider>
+    );
+  }
+}
 
 export default App;
