@@ -506,7 +506,7 @@ export const FilePick3 = (props) => {
   const pickSingle = (index) => {
     // console.log('FilePick3', index);
     ImagePicker.openPicker({
-      cropping: false,
+      cropping: true,
       sortOrder: 'asc',
       compressImageMaxWidth: 1000,
       compressImageMaxHeight: 1000,
@@ -633,7 +633,9 @@ export const FilePick3 = (props) => {
   return (
     <>
       {props.file !== '' ? (
-        <View style={{alignItems: 'center', marginRight: 8, marginTop: 8}}>
+        <View
+          style={{alignItems: 'center', marginRight: 8, marginTop: 8}}
+          key={'img_box_' + props.keys ? props.keys : props.index}>
           {/* <TouchableOpacity onPress={() => putPickHandle(props.index)}> */}
           <TouchableOpacity onPress={() => props.setModal(true, thisSource)}>
             <View
@@ -675,7 +677,9 @@ export const FilePick3 = (props) => {
           )}
         </View>
       ) : (
-        <View style={{alignItems: 'center', marginRight: 8, marginTop: 8}}>
+        <View
+          style={{alignItems: 'center', marginRight: 8, marginTop: 8}}
+          key={'img_box_' + props.keys ? props.keys : props.index}>
           <TouchableOpacity onPress={() => pickSingle(props.index)}>
             <View
               style={{

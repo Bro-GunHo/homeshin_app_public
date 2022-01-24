@@ -163,7 +163,7 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
                 // console.log(element);
                 return (
                   <FilePick
-                    key={index}
+                    keys={index}
                     index={element.id}
                     file={element}
                     setUser_img={setCk_img1}
@@ -177,7 +177,7 @@ function FreeBoardEnroll({navigation, route, mt_idx}) {
 
           {ck_img1.length < 3 ? (
             <FilePick
-              key={ck_img1.length}
+              keys={ck_img1.length}
               index={ck_img1.length}
               file={''}
               setUser_img={setCk_img1}

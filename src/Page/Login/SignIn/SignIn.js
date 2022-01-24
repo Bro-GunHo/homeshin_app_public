@@ -164,9 +164,10 @@ function SignIn(props) {
                 <Text style={style.title}>휴대폰 번호</Text>
                 <TextInput
                   style={style.input}
-                  placeholder="휴대폰 번호를 입력해 주세요."
+                  placeholder="휴대폰 번호를 입력해 주세요.(숫자만입력)"
                   placeholderTextColor="#A2A2A2"
                   value={mt_hp}
+                  keyboardType="number-pad"
                   onChangeText={(text) => setMt_hp(text)}
                 />
                 <Text
