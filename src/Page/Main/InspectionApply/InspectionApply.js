@@ -19,7 +19,7 @@ import BackButton from '~/Components/BackButton';
 import CustomButton from '~/Components/CustomButton';
 import DatePickerModal from '~/Components/DatePickerModal';
 import DefaultHeader from '~/Components/DefaultHeader';
-import {ColorRed, ColorWhite} from '~/style/Color';
+import {ColorRed, ColorWhite, ColorBlack} from '~/style/Color';
 import {FontPretendardBold} from '~/style/Font';
 import {style} from './InspectionApplyStyle';
 import CustomModalApt from '~/Components/CustomModalApt';
@@ -77,6 +77,8 @@ function InspectionApply({navigation}) {
   const directMode = () => {
     setAptInputMode('direct');
     setModalOpen(false);
+
+    setSendData({...sendData, tb_idx: '', mt_house_name: '', tb_addr: ''});
   };
   const aptSelect = (tb_idx, mt_house_name, tb_addr) => {
     setAptInputMode('search');
@@ -87,6 +89,8 @@ function InspectionApply({navigation}) {
   const closeAction = () => {
     setModalOpen(false);
   };
+
+  const selectClear = () => {};
 
   const searchMode = () => {};
 
@@ -159,7 +163,7 @@ function InspectionApply({navigation}) {
     <SafeAreaView style={[style.container]}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검신청하기'}
+        headerTitle={'점검 신청'}
       />
       <KeyboardAvoidingView
         style={{flex: 1}}
@@ -193,14 +197,16 @@ function InspectionApply({navigation}) {
                 />
               </View>
               <CustomButton
-                label={'검색'}
+                label={aptInputMode == 'direct' ? '검색' : '재검색'}
                 labelColor={ColorRed}
                 labelSize={15}
                 borderColor={ColorRed}
                 backgroundColor={ColorWhite}
                 borderRadius={5}
                 flex={0.3}
-                onPress={() => _search()}
+                onPress={() =>
+                  aptInputMode == 'direct' ? _search() : directMode()
+                }
               />
             </View>
 
@@ -221,11 +227,12 @@ function InspectionApply({navigation}) {
                     return (
                       <TouchableOpacity
                         style={{
-                          borderColor: '#E2E2E2',
+                          borderColor: '#FFF',
                           borderBottomWidth: data.length == index + 1 ? 0 : 1,
                           // borderLeftWidth: 1,
                           // borderRightWidth: 1,
                           padding: 10,
+                          backgroundColor: '#DDDDDD',
                         }}
                         key={'search_result_' + item.idx.toString()}
                         onPress={() =>
@@ -367,7 +374,7 @@ function InspectionApply({navigation}) {
           </View>
           <View style={style.section}>
             <View style={style.textBox}>
-              <Text style={style.title}>작업희망날짜</Text>
+              <Text style={style.title}>점검 희망 날짜</Text>
               <Text style={style.titleReq}>*</Text>
             </View>
 
@@ -389,7 +396,7 @@ function InspectionApply({navigation}) {
           </View>
           <View style={style.section}>
             <View style={style.textBox}>
-              <Text style={style.title}>작업시간</Text>
+              <Text style={style.title}>점검 희망 시간</Text>
               <Text style={style.titleReq}>*</Text>
             </View>
 

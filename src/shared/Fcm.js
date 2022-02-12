@@ -129,13 +129,13 @@ function Fcm(props) {
         remoteMessage.data.title,
         remoteMessage.data.body,
         [
+          // {
+          //   text: 'Cancel',
+          //   onPress: () => console.log('Cancel'),
+          //   style: 'cancel',
+          // },
           {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel'),
-            style: 'cancel',
-          },
-          {
-            text: 'OK',
+            text: '확인',
             onPress: () => {
               callScreen(props, remoteMessage.data);
             },

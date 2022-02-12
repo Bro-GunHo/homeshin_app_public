@@ -77,7 +77,7 @@ function InspectionUserDetail({navigation, route, mt_idx, mt_level}) {
     <SafeAreaView style={style.container}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검회원 상세'}
+        headerTitle={'점검 현황 상세'}
       />
       <View style={{flex: 1, padding: 20}}>
         <Text style={[style.title, {fontSize: 24}]}>{data.mt_name}</Text>

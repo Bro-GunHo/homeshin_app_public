@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  SafeAreaView,
   Dimensions,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -19,6 +20,8 @@ import AsyncStorage from '@react-native-community/async-storage'; //비동기 �
 import {connect, useDispatch} from 'react-redux';
 import {updateLogin as loginAction} from '~/redux/actions/loginAction';
 import Api from '~/Api';
+import BackButton from '~/Components/BackButton';
+import DefaultHeader from '~/Components/DefaultHeader';
 
 function SignIn(props) {
   const {navigation, route} = props;
@@ -77,6 +80,7 @@ function SignIn(props) {
       mt_push_key: mb_fcm,
       mt_device: Platform.OS,
       is_modal: 1000,
+      mt_level: mt_level,
     });
 
     // console.log('datas', responseJson);
@@ -123,90 +127,96 @@ function SignIn(props) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS == 'android' ? 45 : 0}>
-      <ScrollView
-        contentContainerStyle={{
-          minHeight: Math.round(Dimensions.get('window').height),
-          widht: '100%',
-          justifyContent: 'flex-end',
-        }}
-        bounces={false}>
-        <View style={[style.container, {justifyContent: 'flex-end'}]}>
-          <View
-            style={{
-              height: Math.round(Dimensions.get('window').height / 2.5),
-              widht: '100%',
-              // flex: 1.5,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <FastImage
-              source={require('~/Assets/Images/img_logo.png')}
-              style={{width: 230, height: 230}}
-            />
-          </View>
-          <View>
-            <View style={style.section}>
-              <View style={style.wrapper}>
-                <Text style={style.title}>이름</Text>
-                <TextInput
-                  style={style.input}
-                  value={mt_name}
-                  onChangeText={(text) => setMt_name(text)}
-                  placeholder="이름을 입력해 주세요."
-                  placeholderTextColor="#A2A2A2"
-                />
-              </View>
-              <View style={style.wrapper}>
-                <Text style={style.title}>휴대폰 번호</Text>
-                <TextInput
-                  style={style.input}
-                  placeholder="휴대폰 번호를 입력해 주세요.(숫자만입력)"
-                  placeholderTextColor="#A2A2A2"
-                  value={mt_hp}
-                  keyboardType="number-pad"
-                  onChangeText={(text) => setMt_hp(text)}
-                />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontFamily: FontPretendardRegular,
-                    color: ColorRed,
-                  }}>
-                  {errorMsg ? errorMsg : ' '}
-                </Text>
-              </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS == 'android' ? 45 : 0}>
+        <DefaultHeader
+          headerLeft={<BackButton navigation={navigation} />}
+          headerTitle=""
+        />
+        <ScrollView
+          contentContainerStyle={{
+            minHeight: Math.round(Dimensions.get('window').height - 50),
+            widht: '100%',
+            justifyContent: 'flex-end',
+          }}
+          bounces={false}>
+          <View style={[style.container, {justifyContent: 'flex-end'}]}>
+            <View
+              style={{
+                height: Math.round(Dimensions.get('window').height / 2.5),
+                widht: '100%',
+                // flex: 1.5,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <FastImage
+                source={require('~/Assets/Images/img_logo.png')}
+                style={{width: 230, height: 230}}
+              />
             </View>
-            <View style={style.section}>
-              <View style={{marginVertical: 5}}>
-                <CustomButton
-                  label="로그인"
-                  labelColor={ColorWhite}
-                  backgroundColor={ColorRed}
-                  borderRadius={5}
-                  onPress={() => _Login()}
-                />
-              </View>
-              {mt_level == '2' ? (
-                <View style={{marginVertical: 5}}>
-                  <CustomButton
-                    label="회원가입"
-                    labelColor={ColorBlack}
-                    backgroundColor={ColorWhite}
-                    borderColor={'#E3E3E3'}
-                    borderRadius={5}
-                    onPress={() => navigation.navigate('Terms')}
+            <View>
+              <View style={style.section}>
+                <View style={style.wrapper}>
+                  <Text style={style.title}>이름</Text>
+                  <TextInput
+                    style={style.input}
+                    value={mt_name}
+                    onChangeText={(text) => setMt_name(text)}
+                    placeholder="이름을 입력해 주세요."
+                    placeholderTextColor="#A2A2A2"
                   />
                 </View>
-              ) : null}
+                <View style={style.wrapper}>
+                  <Text style={style.title}>휴대폰 번호</Text>
+                  <TextInput
+                    style={style.input}
+                    placeholder="휴대폰 번호를 입력해 주세요.(숫자만 입력)"
+                    placeholderTextColor="#A2A2A2"
+                    value={mt_hp}
+                    keyboardType="number-pad"
+                    onChangeText={(text) => setMt_hp(Api.telinput(text))}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: FontPretendardRegular,
+                      color: ColorRed,
+                    }}>
+                    {errorMsg ? errorMsg : ' '}
+                  </Text>
+                </View>
+              </View>
+              <View style={style.section}>
+                <View style={{marginVertical: 5}}>
+                  <CustomButton
+                    label="로그인"
+                    labelColor={ColorWhite}
+                    backgroundColor={ColorRed}
+                    borderRadius={5}
+                    onPress={() => _Login()}
+                  />
+                </View>
+                {mt_level == '2' ? (
+                  <View style={{marginVertical: 5}}>
+                    <CustomButton
+                      label="회원가입"
+                      labelColor={ColorBlack}
+                      backgroundColor={ColorWhite}
+                      borderColor={'#E3E3E3'}
+                      borderRadius={5}
+                      onPress={() => navigation.navigate('Terms')}
+                    />
+                  </View>
+                ) : null}
+              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

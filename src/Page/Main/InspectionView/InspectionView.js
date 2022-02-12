@@ -57,7 +57,7 @@ function InspectionView({navigation, mt_idx, mt_level}) {
 
       <DefaultHeader
         headerLeft={<BackHome navigation={navigation} />}
-        headerTitle={'점검현황조회'}
+        headerTitle={'점검 현황'}
       />
 
       <View style={{flex: 1}}>

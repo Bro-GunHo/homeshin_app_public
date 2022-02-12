@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import {SafeAreaView, Text, View, TouchableOpacity} from 'react-native';
 import CheckSelector from '~/Components/CheckSelector';
 import CustomButton from '~/Components/CustomButton';
 import {ColorRed, ColorWhite} from '~/style/Color';
 import {style} from '~/Page/Login/LoginStyle';
 import FastImage from 'react-native-fast-image';
+import CheckButton from '~/Components/CheckButton';
+import {FontPretendardSemiBold, FontPretendardBold} from '~/style/Font';
 
 function Login({navigation}) {
   const [loginType, setLoginType] = useState(2);
@@ -45,21 +47,40 @@ function Login({navigation}) {
             marginVertical: 40,
           },
         ]}>
-        <CheckSelector
+        <TouchableOpacity
+          onPress={() => setLoginType(2)}
+          style={{flexDirection: 'row', alignItems: 'center'}}>
+          <CheckButton
+            status={loginType === 2}
+            onPress={() => setLoginType(2)}
+            size={25}
+          />
+          <Text
+            style={{
+              marginLeft: 10,
+              fontFamily: FontPretendardBold,
+              fontSize: 25,
+            }}>
+            입주자
+          </Text>
+        </TouchableOpacity>
+
+        {/* <CheckSelector
           label="입주자"
           status={loginType === 2}
           onPress={() => setLoginType(2)}
-        />
+        /> */}
         <CheckSelector
-          label="작업자"
+          label="점검자"
           status={loginType === 6}
           onPress={() => setLoginType(6)}
         />
-        <CheckSelector
-          label="기술자"
+
+        {/* <CheckSelector
+          label="책임자"
           status={loginType === 7}
           onPress={() => setLoginType(7)}
-        />
+        /> */}
       </View>
       <View style={[style.section, {width: '100%', justifyContent: 'center'}]}>
         <View style={{alignItems: 'center'}}>

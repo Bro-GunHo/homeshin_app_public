@@ -48,7 +48,7 @@ function Setting({navigation, mt_idx, mt_level, mt_push_yn}) {
               paddingVertical: 15,
             }}
             onPress={() => _pushOnoff()}>
-            <Text style={style.title}>푸쉬알림 설정</Text>
+            <Text style={style.title}>푸시알림 설정</Text>
             <Switch
               thumbColor={ColorWhite}
               trackColor={{true: ColorRed}}

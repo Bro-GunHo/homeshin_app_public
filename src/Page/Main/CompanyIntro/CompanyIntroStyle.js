@@ -13,5 +13,6 @@ export const style = StyleSheet.create({
   textarea: {
     fontFamily: mystyle.font1,
     fontSize: mystyle.minFontSize,
+    padding: 20,
   },
 });

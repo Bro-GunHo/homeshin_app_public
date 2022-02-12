@@ -3,7 +3,7 @@ import {TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {ColorRed, ColorWhite} from '~/style/Color';
 
-function CheckButton({status, onPress}) {
+function CheckButton({status, onPress, size = 14}) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -12,7 +12,7 @@ function CheckButton({status, onPress}) {
           padding: 5,
           borderRadius: 50,
         }}>
-        <Icon name="check" color={ColorWhite} size={14} />
+        <Icon name="check" color={ColorWhite} size={size} />
       </View>
     </TouchableOpacity>
   );

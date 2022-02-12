@@ -41,7 +41,7 @@ export default function myWebView(props) {
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검현황조회 상세'}
+        headerTitle={'결과 보고서 미리보기'}
       />
       <CusWebview
         url={url}

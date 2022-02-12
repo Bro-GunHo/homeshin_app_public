@@ -16,7 +16,7 @@ import DefaultHeader from '~/Components/DefaultHeader';
 import {ColorBlack, ColorRed, ColorWhite} from '~/style/Color';
 // import {style} from '~/Page/Main/ChemistryCheckEnroll/ChemistryCheckEnrollStyle';
 import {connect, useDispatch} from 'react-redux';
-import Api, {NodataView} from '~/Api';
+import Api, {NodataView, Loaders} from '~/Api';
 import cusToast from '~/Components/CusToast';
 
 const defobj = {loc: '', cont: ''};
@@ -115,9 +115,12 @@ function ChemistryForm({navigation, route, mt_idx}) {
       nums++;
     });
 
+    setIsLoading(true);
+
     if (idx) {
       Api.send('proc_chemical_edit', sendObj, (responseJson) => {
         if (responseJson.result == 'Y') {
+          setIsLoading(false);
           Alert.alert('수정되었습니다.', '', [
             {text: '확인', onPress: () => navigation.goBack()},
           ]);
@@ -126,6 +129,7 @@ function ChemistryForm({navigation, route, mt_idx}) {
     } else {
       Api.send('proc_chemical_write', sendObj, (responseJson) => {
         if (responseJson.result == 'Y') {
+          setIsLoading(false);
           Alert.alert('등록되었습니다.', '', [
             {text: '확인', onPress: () => navigation.goBack()},
           ]);
@@ -135,7 +139,7 @@ function ChemistryForm({navigation, route, mt_idx}) {
   };
 
   const _addLow = () => {
-    if (ch_data_arr.length == 10) return;
+    // if (ch_data_arr.length == 10) return;
 
     setCh_data_arr([...ch_data_arr, {...defobj}]);
   };
@@ -161,6 +165,8 @@ function ChemistryForm({navigation, route, mt_idx}) {
         headerTitle="화학물질 검출 목록"
       />
 
+      <Loaders views={isLoading} />
+
       <ScrollView
         style={{flex: 1, paddingHorizontal: 20}}
         nestedScrollEnabled={true}>
@@ -169,14 +175,14 @@ function ChemistryForm({navigation, route, mt_idx}) {
           <View style={style.inputBox}>
             <TextInput
               style={style.input}
-              placeholder="ex) 포름알데히드(HCHO)"
+              placeholder="ex) 폼알데하이드(HCHO)"
               value={ch_sub}
               onChangeText={(text) => setCh_sub(text)}
             />
           </View>
         </View>
         <View style={style.section}>
-          <Text style={style.title}>위치 및 내용</Text>
+          <Text style={style.title}>공간 및 내용</Text>
 
           {ch_data_arr.map((item, index) => {
             return (
@@ -184,7 +190,7 @@ function ChemistryForm({navigation, route, mt_idx}) {
                 <View style={style.inputBox}>
                   <TextInput
                     style={style.input}
-                    placeholder="위치 입력 ex) 거실"
+                    placeholder="공간 입력 ex) 거실"
                     value={item.loc}
                     onChangeText={(text) => _data_chg('loc', index, text)}
                   />
@@ -211,7 +217,7 @@ function ChemistryForm({navigation, route, mt_idx}) {
 
         <View style={{paddingVertical: 20}}>
           <CustomButton
-            label={'위치 및 내용 추가'}
+            label={'공간 및 내용 추가'}
             labelColor={ColorBlack}
             borderColor={'#E3E3E3'}
             borderRadius={5}
@@ -219,7 +225,7 @@ function ChemistryForm({navigation, route, mt_idx}) {
           />
           <View style={{marginVertical: 3}}>
             <CustomButton
-              label="위치 및 내용 삭제"
+              label="공간 및 내용 삭제"
               labelColor={ColorBlack}
               backgroundColor={ColorWhite}
               borderColor={'#E3E3E3'}
@@ -234,6 +240,7 @@ function ChemistryForm({navigation, route, mt_idx}) {
               backgroundColor={ColorRed}
               borderColor={'#E3E3E3'}
               borderRadius={5}
+              disabled={isLoading}
               onPress={() => _submit()}
             />
           </View>

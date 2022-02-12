@@ -147,15 +147,15 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
     <SafeAreaView style={style.container}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검수정하기'}
+        headerTitle={'점검 수정'}
       />
       <ScrollView>
         <View style={{flex: 1, padding: 20}}>
-          <View style={style.section}>
+          {/* <View style={style.section}>
             <Text style={[style.title, {fontSize: 24}]}>
               <Text style={{color: ColorRed}}>점검</Text> 수정
             </Text>
-          </View>
+          </View> */}
           <View style={style.section}>
             <Text style={[style.title]}>점검 선택</Text>
             <View style={{marginVertical: 5}}>
@@ -204,7 +204,7 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
             </Text>
           </View>
           <View style={style.section}>
-            <Text style={style.title}>작업희망날짜</Text>
+            <Text style={style.title}>점검 희망 날짜</Text>
             <TouchableOpacity
               style={[style.wrapper, {alignItems: 'flex-end'}]}
               onPress={() => setPicker(true)}>
@@ -223,7 +223,7 @@ function InspectionEdit({navigation, route, mt_idx, mt_name}) {
           </View>
 
           <View style={style.section}>
-            <Text style={style.title}>작업시간</Text>
+            <Text style={style.title}>점검 희망 시간</Text>
             <View
               style={[
                 style.wrapper,

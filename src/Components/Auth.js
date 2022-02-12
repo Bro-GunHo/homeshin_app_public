@@ -64,7 +64,7 @@ function Auth(props) {
         settings === messaging.AuthorizationStatus.AUTHORIZED ||
         settings === messaging.AuthorizationStatus.PROVISIONAL;
 
-      // console.log(settings, enabled);
+      console.log(settings, enabled);
       if (enabled) {
         // settings
         // console.log('Permission settings:', settings);
@@ -133,11 +133,11 @@ function Auth(props) {
         remoteMessage.data.title,
         remoteMessage.data.body,
         [
-          {
-            text: '취소',
-            onPress: () => console.log('Cancel'),
-            style: 'cancel',
-          },
+          // {
+          //   text: '취소',
+          //   onPress: () => console.log('Cancel'),
+          //   style: 'cancel',
+          // },
           {
             text: '확인',
             onPress: () => {
@@ -168,10 +168,10 @@ function Auth(props) {
         //입주자
         method = 'proc_login_member';
       } else if (mt_level == '6') {
-        //작업자
+        //점검자
         method = 'proc_login_member_trainer';
       } else if (mt_level == '7') {
-        //기술자
+        //책임자
         method = 'proc_login_member_trainer';
       }
 

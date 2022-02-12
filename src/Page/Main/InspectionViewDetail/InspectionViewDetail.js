@@ -89,7 +89,7 @@ function InspectionViewDetail({navigation, route, mt_idx, mt_level}) {
           setStatusType(newList[0].value);
         }
         setOptionType(project_data.pr_option);
-        // console.log('@@', responseJson.item.project_data[0]);
+        console.log('@@', project_data);
       } else {
         navigation.navigate.goBack();
       }
@@ -106,7 +106,7 @@ function InspectionViewDetail({navigation, route, mt_idx, mt_level}) {
     <SafeAreaView style={style.container}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검현황조회 상세'}
+        headerTitle={'점검 결과'}
       />
       <View style={{flex: 1}}>
         <TabBar list={list} setValue={setStatusType} value={statusType} />

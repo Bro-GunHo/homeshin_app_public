@@ -192,7 +192,7 @@ function SignUp({navigation}) {
             placeholder="휴대폰 번호"
             placeholderTextColor="#A2A2A2"
             value={mt_hp}
-            onChangeText={(text) => setMt_hp(text)}
+            onChangeText={(text) => setMt_hp(Api.telinput(text))}
             editable={!hpDisabled}
             keyboardType={'number-pad'}
           />

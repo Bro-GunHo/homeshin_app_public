@@ -35,7 +35,7 @@ function Home(props) {
     }
   }, []);
 
-  const [loginType, setLoginType] = useState(mt_level == '2' ? 1 : 2); //1: 입주자 , 2: 작업자 , 3: 기술자
+  const [loginType, setLoginType] = useState(mt_level == '2' ? 1 : 2); //1: 입주자 , 2: 점검자 , 3: 책임자
 
   return (
     <SafeAreaView style={style.container}>
@@ -70,7 +70,7 @@ function Home(props) {
           />
           <View style={{width: '100%', paddingHorizontal: 20}}>
             <CustomButton
-              label={loginType === 1 ? '점검신청하기' : '점검현황조회'}
+              label={loginType === 1 ? '점검 신청' : '점검 현황 조회'}
               labelColor={ColorWhite}
               borderRadius={5}
               backgroundColor={ColorRed}
@@ -109,7 +109,7 @@ function Home(props) {
                     style={{width: 55, height: 55}}
                   />
                   <View style={style.TitleWrap}>
-                    <Text style={style.buttonTitle}>점검현황조회</Text>
+                    <Text style={style.buttonTitle}>점검 현황</Text>
                     <Text style={style.buttonSubTitle}>사전점검 진행을</Text>
                     <Text style={style.buttonSubTitle}>확인해 주세요.</Text>
                   </View>

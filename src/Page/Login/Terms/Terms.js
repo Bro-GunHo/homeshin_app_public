@@ -26,7 +26,7 @@ function Terms({navigation}) {
   };
 
   const getData = () => {
-    Api.send('proc_list_content', {co_id: 1}, (responseJson) => {
+    Api.send('proc_list_content', {co_id: 2}, (responseJson) => {
       if (responseJson.result === 'Y') {
         if (responseJson.item.co_content)
           //responseJson.response.info = strip_tags(responseJson.response.info);
@@ -34,7 +34,7 @@ function Terms({navigation}) {
       }
     });
 
-    Api.send('proc_list_content', {co_id: 2}, (responseJson) => {
+    Api.send('proc_list_content', {co_id: 1}, (responseJson) => {
       if (responseJson.result === 'Y') {
         if (responseJson.item.co_content)
           //responseJson.response.info = strip_tags(responseJson.response.info);
@@ -61,7 +61,7 @@ function Terms({navigation}) {
               <Text>{data1}</Text>
             </ScrollView>
           </View>
-          <Text style={[style.label, {marginTop: 15}]}>개인정보처리방침</Text>
+          <Text style={[style.label, {marginTop: 15}]}>개인정보 처리방침</Text>
           <View style={style.scrollWrap}>
             <ScrollView>
               <Text>{data2}</Text>
@@ -78,7 +78,7 @@ function Terms({navigation}) {
           </View>
           <View style={style.selectWrap}>
             <CheckSelector
-              label="개인정보처리방침에 동의합니다 (필수)"
+              label="개인정보 처리방침에 동의합니다 (필수)"
               status={checked2}
               onPress={() => setChecked2(!checked2)}
             />

@@ -37,7 +37,11 @@ function InspectionCard({item, navigation, statusType, mt_level, mt_idx}) {
           alignItems: 'center',
           marginBottom: 10,
         }}>
-        <Text style={{fontSize: 15, fontFamily: FontPretendardBold}}>
+        <Text
+          style={{
+            fontSize: 15,
+            fontFamily: FontPretendardBold,
+          }}>
           {item.mt_name}
         </Text>
         <Text
@@ -64,7 +68,11 @@ function InspectionCard({item, navigation, statusType, mt_level, mt_idx}) {
         </View>
       </View>
       <View style={{marginBottom: 10}}>
-        <Text style={{fontFamily: FontPretendardMedium, fontSize: 15}}>
+        <Text
+          style={{
+            fontFamily: FontPretendardMedium,
+            fontSize: 15,
+          }}>
           {item.mt_house_name} {item.mt_house_dong}
         </Text>
       </View>
@@ -106,17 +114,29 @@ function InspectionCard({item, navigation, statusType, mt_level, mt_idx}) {
         </View>
       )}
       {mt_level == '2' && item.pr_status == 'C' && (
-        <View style={{marginVertical: 10}}>
+        <View>
+          <View style={{marginVertical: 10}}>
+            <CustomButton
+              label={'점검 결과 확인'}
+              labelColor={ColorRed}
+              labelSize={15}
+              backgroundColor={ColorWhite}
+              borderColor={ColorRed}
+              borderRadius={5}
+              onPress={() =>
+                navigation.navigate('InspectionViewDetail', {pr_idx: item.idx})
+              }
+            />
+          </View>
+
           <CustomButton
-            label={'점검 결과 확인'}
-            labelColor={ColorRed}
-            labelSize={15}
-            backgroundColor={ColorWhite}
-            borderColor={ColorRed}
+            label={'결과 보고서 다운로드(PDF)'}
+            labelColor={ColorWhite}
+            backgroundColor={ColorRed}
             borderRadius={5}
-            onPress={() =>
-              navigation.navigate('InspectionViewDetail', {pr_idx: item.idx})
-            }
+            onPress={() => {
+              navigation.navigate('Word', {pr_idx: item.idx});
+            }}
           />
         </View>
       )}

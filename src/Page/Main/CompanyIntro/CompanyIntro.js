@@ -9,7 +9,7 @@ import Api from '~/Api';
 const list = [
   {label: '회사소개', value: 1, key: 1, co_id: 4},
   {label: '이용약관', value: 2, key: 2, co_id: 2},
-  {label: '개인정보처리방침', value: 3, key: 3, co_id: 1},
+  {label: '개인정보 처리방침', value: 3, key: 3, co_id: 1},
 ];
 
 function CompanyIntro({navigation, route}) {
@@ -58,15 +58,15 @@ function CompanyIntro({navigation, route}) {
       />
       <TabBar list={list} value={statusType} setValue={setStatusType} />
       {statusType == 1 ? (
-        <ScrollView style={[style.section, {padding: 20}]}>
+        <ScrollView style={[style.section]}>
           <Text style={style.textarea}>{data3}</Text>
         </ScrollView>
       ) : statusType == 2 ? (
-        <ScrollView style={[style.section, {padding: 20}]}>
+        <ScrollView style={[style.section]}>
           <Text style={style.textarea}>{data2}</Text>
         </ScrollView>
       ) : statusType == 3 ? (
-        <ScrollView style={[style.section, {padding: 20}]}>
+        <ScrollView style={[style.section]}>
           <Text style={style.textarea}>{data1}</Text>
         </ScrollView>
       ) : null}

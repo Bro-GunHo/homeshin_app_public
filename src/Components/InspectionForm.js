@@ -17,7 +17,7 @@ import CustomButton from '~/Components/CustomButton';
 import DefaultHeader from '~/Components/DefaultHeader';
 import {ColorBlack, ColorRed, ColorWhite} from '~/style/Color';
 import {connect, useDispatch} from 'react-redux';
-import Api, {NodataView} from '~/Api';
+import Api, {NodataView, Loaders} from '~/Api';
 import cusToast from '~/Components/CusToast';
 import moment from 'moment';
 import DatePickerModal from '~/Components/DatePickerModal';
@@ -120,6 +120,8 @@ function InspectionForm({navigation, route, mt_idx}) {
       return false;
     }
 
+    setIsLoading(true);
+
     let sendObj = {
       mt_idx: mt_idx,
       pr_idx: pr_idx,
@@ -157,6 +159,7 @@ function InspectionForm({navigation, route, mt_idx}) {
         'proc_checklist_edit',
         sendObj,
         (responseJson) => {
+          setIsLoading(false);
           if (responseJson.result == 'Y') {
             Alert.alert('수정되었습니다.', '', [
               {text: '확인', onPress: () => navigation.goBack()},
@@ -170,6 +173,7 @@ function InspectionForm({navigation, route, mt_idx}) {
         'proc_checklist_write',
         sendObj,
         (responseJson) => {
+          setIsLoading(false);
           if (responseJson.result == 'Y') {
             Alert.alert('등록되었습니다.', '', [
               {text: '확인', onPress: () => navigation.goBack()},
@@ -188,13 +192,15 @@ function InspectionForm({navigation, route, mt_idx}) {
         headerTitle="사안별 하자 목록"
       />
 
+      <Loaders views={isLoading} />
+
       <ScrollView contentContainerStyle={{paddingHorizontal: 20}}>
         <View style={style.section}>
           <Text style={style.title}>공간</Text>
           <View style={style.inputBox}>
             <TextInput
               style={style.input}
-              placeholder="공간입력"
+              placeholder="공간 입력"
               value={ck_space}
               onChangeText={(text) => setCk_space(text)}
             />
@@ -205,7 +211,7 @@ function InspectionForm({navigation, route, mt_idx}) {
           <View style={style.inputBox}>
             <TextInput
               style={style.input}
-              placeholder="위치입력"
+              placeholder="위치 입력"
               value={ck_location}
               onChangeText={(text) => setCk_location(text)}
             />
@@ -216,7 +222,7 @@ function InspectionForm({navigation, route, mt_idx}) {
           <View style={style.inputBox}>
             <TextInput
               style={[style.input, {textAlignVertical: 'top', minHeight: 55}]}
-              placeholder="하자입력"
+              placeholder="하자 입력"
               multiline
               value={ck_memo}
               onChangeText={(text) => setCk_memo(text)}
@@ -339,6 +345,7 @@ function InspectionForm({navigation, route, mt_idx}) {
               backgroundColor={ColorRed}
               borderColor={'#E3E3E3'}
               borderRadius={5}
+              disabled={isLoading}
               onPress={() => _submit()}
             />
           </View>

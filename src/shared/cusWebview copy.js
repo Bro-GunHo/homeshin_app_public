@@ -293,11 +293,11 @@ const CusWebview = (props) => {
       if (newLink_screen) {
         if (isDirectPop) {
           Alert.alert(remoteMessage.title, remoteMessage.body, [
-            {
-              text: '취소',
-              onPress: () => false,
-              style: 'cancel',
-            },
+            // {
+            //   text: '취소',
+            //   onPress: () => false,
+            //   style: 'cancel',
+            // },
             {
               text: '확인',
               onPress: () => {

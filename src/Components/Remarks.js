@@ -50,7 +50,7 @@ function Remarks({data, navigation, mt_level, mt_idx, mt_name, mt_img_big}) {
         <View>
           {!data.done_dt ? <NodataView msg="완료되지 않았습니다." /> : null}
           {
-            //기술자는 작업완료 가능
+            //책임자는 작업완료 가능
             mt_level == 7 ? (
               <View>
                 <View style={style.section}>
@@ -93,12 +93,12 @@ function Remarks({data, navigation, mt_level, mt_idx, mt_name, mt_img_big}) {
                           fontFamily: FontPretendardRegular,
                           marginLeft: 5,
                         }}>
-                        {mt_name}
+                        {data.pr_checklist_eng ? data.pr_checklist_eng : ' '}
                       </Text>
                     </View>
-                    {mt_img_big ? (
+                    {data.pr_checklist_logo_big ? (
                       <FastImage
-                        source={{uri: mt_img_big}}
+                        source={{uri: data.pr_checklist_logo_big}}
                         style={{height: 80, width: 80}}
                         resizeMode="contain"
                       />
@@ -117,7 +117,7 @@ function Remarks({data, navigation, mt_level, mt_idx, mt_name, mt_img_big}) {
                   </View>
 
                   <CustomButton
-                    label={'점검현황 다운로드 (pdf)'}
+                    label={'결과 보고서 다운로드(PDF)'}
                     labelColor={ColorWhite}
                     backgroundColor={ColorRed}
                     borderRadius={5}
@@ -160,7 +160,7 @@ function Remarks({data, navigation, mt_level, mt_idx, mt_name, mt_img_big}) {
                     fontFamily: FontPretendardRegular,
                     marginLeft: 5,
                   }}>
-                  {data.mt_name}
+                  {data.pr_checklist_eng ? data.pr_checklist_eng : ' '}
                 </Text>
               </View>
               {data.pr_checklist_logo_big ? (
@@ -174,7 +174,7 @@ function Remarks({data, navigation, mt_level, mt_idx, mt_name, mt_img_big}) {
           </View>
           <View style={{padding: 20}}>
             <CustomButton
-              label={'점검현황 다운로드 (pdf)'}
+              label={'결과 보고서 다운로드(PDF)'}
               labelColor={ColorWhite}
               backgroundColor={ColorRed}
               borderRadius={5}

@@ -68,14 +68,14 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
     <SafeAreaView style={style.container}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검신청하기'}
+        headerTitle={'점검 신청'}
       />
       <View style={{flex: 1, padding: 20}}>
-        <View style={style.section}>
+        {/* <View style={style.section}>
           <Text style={[style.title, {fontSize: 24}]}>
             <Text style={{color: ColorRed}}>점검</Text> 선택
           </Text>
-        </View>
+        </View> */}
         <View style={style.section}>
           <Text style={[style.title]}>점검 선택</Text>
           <View style={{marginVertical: 5}}>
@@ -149,7 +149,7 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
         </View>
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <CustomButton
-            label={'신청하기'}
+            label={'점검 신청'}
             labelColor={ColorWhite}
             backgroundColor={ColorRed}
             borderRadius={5}

@@ -37,7 +37,7 @@ var minute_option = [
   },
 ];
 
-//작업자용 점검 목록
+//점검자용 점검 목록
 
 const list = [
   {label: '접수', value: 1, key: 'IH_woker_2'},

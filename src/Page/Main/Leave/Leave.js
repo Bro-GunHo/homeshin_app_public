@@ -62,7 +62,7 @@ function Leave(props) {
         headerTitle="회원탈퇴"
       />
       <View style={{flex: 1, padding: 20}}>
-        <Text style={style.label}>탈퇴처리방침</Text>
+        <Text style={style.label}>회원탈퇴 처리방침</Text>
         <ScrollView
           style={{
             flex: 1,
@@ -74,7 +74,7 @@ function Leave(props) {
         </ScrollView>
         <View style={{flex: 0.3}}>
           <CheckSelector
-            label={'회원탈퇴처리 방침에 동의합니다.'}
+            label={'회원탈퇴 처리방침에 동의합니다.'}
             status={agree}
             onPress={() => setAgree((prev) => !prev)}
           />
