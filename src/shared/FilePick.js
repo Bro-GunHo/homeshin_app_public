@@ -33,12 +33,15 @@ function FilePick(props) {
   const pickSingle = (index, mode) => {
     // console.log('rrr');
     ImagePicker.openPicker({
-      cropping: false,
+      cropping: true,
       sortOrder: 'asc',
-      compressImageMaxWidth: 1000,
-      compressImageMaxHeight: 1000,
+      width: 600,
+      height: 600,
+      // compressImageMaxWidth: 1000,
+      // compressImageMaxHeight: 1000,
       compressImageQuality: 1,
       compressVideoPreset: 'MediumQuality',
+      freeStyleCropEnabled: false,
       includeExif: false,
       mediaType: 'photo',
       includeBase64: true,
@@ -93,11 +96,13 @@ function FilePick(props) {
   const CameraSingle = (index, mode) => {
     console.log('camera!!!');
     ImagePicker.openCamera({
-      cropping: false,
+      cropping: true,
       cropperCircleOverlay: false,
       sortOrder: 'asc',
-      compressImageMaxWidth: 1000,
-      compressImageMaxHeight: 1000,
+      width: 600,
+      height: 600,
+      // compressImageMaxWidth: 1000,
+      // compressImageMaxHeight: 1000,
       compressImageQuality: 1,
       compressVideoPreset: 'MediumQuality',
       includeExif: false,

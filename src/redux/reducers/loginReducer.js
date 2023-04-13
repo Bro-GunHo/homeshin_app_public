@@ -10,6 +10,7 @@ const defaultState = {
   mt_img: null,
   mt_img_big: null,
   mt_push_yn: 'Y',
+  mt_position: null,
 };
 
 export default login = (state = defaultState, action) => {
@@ -28,6 +29,7 @@ export default login = (state = defaultState, action) => {
         mt_img: action.mt_img,
         mt_img_big: action.mt_img_big,
         mt_push_yn: action.mt_push_yn ? action.mt_push_yn : 'Y',
+        mt_position: action.mt_position,
       };
     case types.UPDATE_PUSH:
       return {

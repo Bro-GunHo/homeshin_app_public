@@ -91,7 +91,7 @@ function InspectionViewDetail({navigation, route, mt_idx, mt_level}) {
         setOptionType(project_data.pr_option);
         console.log('@@', project_data);
       } else {
-        navigation.navigate.goBack();
+        navigation.goBack();
       }
     });
   };

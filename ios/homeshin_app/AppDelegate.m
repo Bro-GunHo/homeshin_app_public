@@ -61,6 +61,8 @@ static void InitializeFlipper(UIApplication *application) {
   if (@available(iOS 13.0, *)) {
       rootView.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
   }
+  
+  
 
   return YES;
 }

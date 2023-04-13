@@ -23,7 +23,7 @@ export default function myWebView(props) {
 
   const [url, setUrl] = React.useState(
     Api.state.url +
-      '/word/word.php?pr_idx=' +
+      '/word/word2.php?pr_idx=' +
       route.params.pr_idx +
       '&app_login=Y',
   );

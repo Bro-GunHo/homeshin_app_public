@@ -41,7 +41,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import {ColorRed, ColorWhite} from '~/style/Color';
 import CustomButton from '~/Components/CustomButton';
 var RNFS = require('react-native-fs');
-
+var interval = null;
 const CusWebview = (props) => {
   const appState = useRef(AppState.currentState);
   const [isConnected, setIsConnected] = useState(true);
@@ -53,6 +53,7 @@ const CusWebview = (props) => {
   const [mainScreen, setMainScreen] = React.useState(true);
   const [headerUse, setHeaderUse] = React.useState(true);
   const [footerUse, setFooterUse] = React.useState(false);
+  const [counters, setCounters] = React.useState(0);
 
   const timer_load = () => {};
 
@@ -96,10 +97,12 @@ const CusWebview = (props) => {
   //웹뷰 ->  RN 으로 전송
   const onWebViewMessage = (datas) => {
     console.log('웹뷰에서 데이터를 받습니다.');
+
     let jsonData = JSON.parse(datas.nativeEvent.data);
-    if (jsonData.type != 'downfile') {
-      console.log(jsonData);
-    }
+    // if (jsonData.type != 'downfile') {
+
+    // console.log(jsonData);
+    // }
 
     //로그인후 아이디값을 받았다면 저장한다.
     if (jsonData.type == 'login_check') {
@@ -119,6 +122,7 @@ const CusWebview = (props) => {
       props.navigation.navigate('LoginScreen');
     } else if (jsonData.type == 'btn_on') {
       setFooterUse(true);
+      setIsLoading(false);
     } else if (jsonData.type == 'btn_off') {
       setFooterUse(false);
       setIsLoading(true);
@@ -128,12 +132,174 @@ const CusWebview = (props) => {
       setIsLoading(true);
     } else if (jsonData.type == 'loadingOff') {
       setIsLoading(false);
+    } else if (jsonData.type == 'alert') {
+      Alert.alert(jsonData.msg);
+    } else if (jsonData.type == 'downimage') {
+      console.log('EEEE');
+      saveImageToZip(jsonData.data, jsonData.fileName);
     }
   };
 
   const saveToGallery = async (imgSource, tempimageName) => {
-    let imgUrl = imgSource.split(',', 2);
-    imgUrl = imgUrl[1];
+    console.log('saveToGallery', imgSource, tempimageName);
+    // let imgUrl = imgSource.split(',', 2);
+    // imgUrl = imgUrl[1];
+    // console.log('imgUrl', imgUrl);
+    let imgUrl = imgSource;
+    // imgUrl = RNFetchBlob.base64.encode(imgUrl);
+    // console.log(rrr);
+
+    // let newImgUri = imgUrl.lastIndexOf('/');
+    // let imageName = imgUrl.substring(newImgUri);
+
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        } else {
+          ToastAndroid.show(
+            '폴더 사용 권한을 거부하였습니다.',
+            ToastAndroid.LONG,
+          );
+
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    let newImgUri = imgUrl;
+    // let imageName = 'homeshin.pdf';
+    let imageName = tempimageName;
+
+    let dirs = ReactNativeBlobUtil.fs.dirs;
+    // let path =
+    //   Platform.OS === 'ios'
+    //     ? dirs['MainBundleDir'] + imageName
+    //     : dirs.PictureDir + imageName;
+
+    const dirToSave =
+      Platform.OS == 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
+
+    let path = dirToSave + '/' + imageName;
+
+    // console.log(
+    //   'savefile',
+    //   newImgUri.substring(0, 100),
+    //   imageName,
+    //   // dirs.PictureDir,
+    //   path,
+    // );
+
+    // if (Platform.OS == 'android') {
+    // await RNFetchBlob.config({
+    //   fileCache: false,
+    //   // appendExt: 'png',
+    //   indicator: true,
+    //   IOSBackgroundTask: true,
+    //   path: path,
+    //   addAndroidDownloads: {
+    //     useDownloadManager: true,
+    //     notification: true,
+    //     mediaScannable: true,
+    //     // mime: 'application/pdf',
+    //     path: path,
+    //     description: '홈신',
+    //   },
+    // });
+
+    //   RNFS.writeFile(path, newImgUri, 'base64')
+    //     .then((success) => {
+    //       console.log('FILE WRITTEN!');
+    //       ReactNativeBlobUtil.ios.previewDocument(path);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err.message);
+    //     });
+
+    ReactNativeBlobUtil.config({
+      fileCache: true,
+      // appendExt: 'png',
+      // indicator: true,
+      IOSBackgroundTask: true,
+      path: path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        title: '다운로드 되었습니다.',
+        notification: true,
+        path: path,
+        mime: 'application/pdf',
+        description: 'homeshin',
+        mediaScannable: true,
+      },
+    })
+      .fetch('GET', imgUrl, {
+        Accept: 'application/octet-stream',
+      })
+      .then(async (res) => {
+        setIsLoading(false);
+        if (Platform.OS == 'ios') {
+          ReactNativeBlobUtil.ios.previewDocument(path);
+          //Alert.alert(title + '저장되었습니다.');
+        } else {
+          ReactNativeBlobUtil.android.actionViewIntent(path, 'application/pdf');
+          // let title = Platform.OS == 'android' ? '/Download/ ' : '/Documents/ ';
+          // Alert.alert(title + '폴더에 저장되었습니다.');
+        }
+        setFooterUse(true);
+      })
+      .catch((errorMessage, statusCode) => {
+        // Something went wrong:
+        console.log('errorMessage', errorMessage);
+        Alert.alert('오류', '다운로드 권한을 확인해주세요.');
+        // error handling
+      });
+
+    // ReactNativeBlobUtil.fs.writeFile(path, newImgUri, 'base64').then((v) => {
+    //   setIsLoading(false);
+    //   if (Platform.OS == 'ios') {
+    //     ReactNativeBlobUtil.ios.previewDocument(path);
+    //     //Alert.alert(title + '저장되었습니다.');
+    //   } else {
+    //     ReactNativeBlobUtil.android.actionViewIntent(path, 'application/pdf');
+    //     // let title = Platform.OS == 'android' ? '/Download/ ' : '/Documents/ ';
+    //     // Alert.alert(title + '폴더에 저장되었습니다.');
+    //   }
+    //   setFooterUse(true);
+    // });
+
+    // setIsLoading(false);
+
+    // .fetch('GET', imgUrl, {
+    //   // Accept: 'application/pdf',
+    //   // 'Content-Type': 'application/pdf;base64',
+    //   Method: 'GET',
+    // })
+    // .then((res) => {
+    //   console.log('res!!', res);
+    //   let base64Str = res.data;
+    //   // // RNFetchBlob.fs
+    //   // //   .writeFile(path, RNFetchBlob.base64.encdeode(base64Str), 'base64')
+    //   // //   .then((v) => {
+    //   // //     Alert.alert('폴더에 저장되었습니다.');
+    //   // //   });
+    //   // RNFetchBlob.fs.writeFile(path, base64Str, 'base64').then((v) => {
+    //   //   Alert.alert('폴더에 저장되었습니다.');
+    //   // });
+    //   //console.log(res, 'end downloaded');
+    // });
+    // } else {
+    //   await CameraRoll.save(imgUrl, {type: 'photo', album: 'homeshin'});
+    //   Alert.alert('사진함에 저장되었습니다.');
+    // }
+  };
+
+  const saveImageToZip = async (imgSource, tempimageName) => {
+    let imgUrl = imgSource;
+
     // console.log('imgUrl', imgUrl);
     // let imgUrl = imgSource;
     // imgUrl = RNFetchBlob.base64.encode(imgUrl);
@@ -184,84 +350,70 @@ const CusWebview = (props) => {
       path,
     );
 
-    // if (Platform.OS == 'android') {
-    // await RNFetchBlob.config({
-    //   fileCache: false,
-    //   // appendExt: 'png',
-    //   indicator: true,
-    //   IOSBackgroundTask: true,
-    //   path: path,
-    //   addAndroidDownloads: {
-    //     useDownloadManager: true,
-    //     notification: true,
-    //     mediaScannable: true,
-    //     // mime: 'application/pdf',
-    //     path: path,
-    //     description: '홈신',
-    //   },
-    // });
-
-    if (Platform.OS == 'ios') {
-      //   RNFS.writeFile(path, newImgUri, 'base64')
-      //     .then((success) => {
-      //       console.log('FILE WRITTEN!');
-      //       ReactNativeBlobUtil.ios.previewDocument(path);
-      //     })
-      //     .catch((err) => {
-      //       console.log(err.message);
-      //     });
-
-      ReactNativeBlobUtil.fs.writeFile(path, newImgUri, 'base64').then((v) => {
+    ReactNativeBlobUtil.config({
+      fileCache: true,
+      // appendExt: 'png',
+      // indicator: true,
+      IOSBackgroundTask: true,
+      path: path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        title: '다운로드 되었습니다.',
+        notification: true,
+        path: path,
+        mime: 'application/zip',
+        description: 'homeshin',
+        mediaScannable: true,
+      },
+    })
+      .fetch('GET', imgUrl, {Accept: 'application/octet-stream'})
+      .then(async (res) => {
         setIsLoading(false);
         if (Platform.OS == 'ios') {
           ReactNativeBlobUtil.ios.previewDocument(path);
           //Alert.alert(title + '저장되었습니다.');
         } else {
-          ReactNativeBlobUtil.android.actionViewIntent(path, 'application/pdf');
+          ReactNativeBlobUtil.android.actionViewIntent(path, 'application/zip');
           // let title = Platform.OS == 'android' ? '/Download/ ' : '/Documents/ ';
           // Alert.alert(title + '폴더에 저장되었습니다.');
         }
         setFooterUse(true);
+      })
+      .catch((errorMessage, statusCode) => {
+        // Something went wrong:
+        console.log('errorMessage', errorMessage);
+        Alert.alert('오류', '폴더 권한을 확인해주세요.');
+        // error handling
       });
-    } else {
-      ReactNativeBlobUtil.fs.writeFile(path, newImgUri, 'base64').then((v) => {
-        setIsLoading(false);
-        if (Platform.OS == 'ios') {
-          ReactNativeBlobUtil.ios.previewDocument(path);
-          //Alert.alert(title + '저장되었습니다.');
-        } else {
-          ReactNativeBlobUtil.android.actionViewIntent(path, 'application/pdf');
-          // let title = Platform.OS == 'android' ? '/Download/ ' : '/Documents/ ';
-          // Alert.alert(title + '폴더에 저장되었습니다.');
-        }
-        setFooterUse(true);
-      });
-    }
+  };
 
-    // setIsLoading(false);
+  const tempsaveImageToZip = async () => {
+    Alert.alert(
+      '모든 사진을 압축한 뒤 내려받게 됩니다.',
+      'Wi-Fi 환경이 아니라면 데이터 이용료가 발생할 수 있습니다.',
+      [
+        {text: '취소'},
+        {
+          text: '확인',
+          onPress: () => {
+            Api.send('proc_image_download', {pr_idx: pr_idx}, (datas) => {
+              if (responseJson.result == 'Y') {
+                if (!responseJson.item.length) {
+                  cusToast('자료를 불러오는데 실패했습니다.');
+                  // navigation.goBack();
+                  return;
+                }
 
-    // .fetch('GET', imgUrl, {
-    //   // Accept: 'application/pdf',
-    //   // 'Content-Type': 'application/pdf;base64',
-    //   Method: 'GET',
-    // })
-    // .then((res) => {
-    //   console.log('res!!', res);
-    //   let base64Str = res.data;
-    //   // // RNFetchBlob.fs
-    //   // //   .writeFile(path, RNFetchBlob.base64.encdeode(base64Str), 'base64')
-    //   // //   .then((v) => {
-    //   // //     Alert.alert('폴더에 저장되었습니다.');
-    //   // //   });
-    //   // RNFetchBlob.fs.writeFile(path, base64Str, 'base64').then((v) => {
-    //   //   Alert.alert('폴더에 저장되었습니다.');
-    //   // });
-    //   //console.log(res, 'end downloaded');
-    // });
-    // } else {
-    //   await CameraRoll.save(imgUrl, {type: 'photo', album: 'homeshin'});
-    //   Alert.alert('사진함에 저장되었습니다.');
-    // }
+                let data = responseJson.item[0];
+                console.log('data', data.name);
+              }
+
+              //console.log('datas', datas);
+            });
+          },
+        },
+      ],
+    );
   };
 
   const webSaveToken = async (user) => {
@@ -738,8 +890,13 @@ const CusWebview = (props) => {
               onNavigationStateChange(webViews.nativeEvent);
             }}
             pullToRefreshEnabled={true}
+            onError={(e) => {
+              const {nativeEvent} = e;
+              console.log('webview err', nativeEvent);
+            }}
             //allowsBackForwardNavigationGestures={true}
-            cacheEnabled={false}
+            cacheMode="LOAD_NO_CACHE"
+            cacheEnabled={true}
             onMessage={(webViews) => onWebViewMessage(webViews)}
             setSupportMultipleWindows={false}
             onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
@@ -747,8 +904,10 @@ const CusWebview = (props) => {
             //onNavigationStateChange={
             //(webViews) =>
             //onNavigationStateChange(webViews)
-            //} //for Android
+            //} //for
 
+            // decelerationRate="fast"
+            androidHardwareAccelerationDisabled={false}
             injectedJavaScript={debugging}
             javaScriptCanOpenWindowsAutomatically={true}
             javaScriptEnabledAndroid={true}
@@ -779,13 +938,34 @@ const CusWebview = (props) => {
             />
           )} */}
 
-          <View style={{marginBottom: 10, paddingHorizontal: 20}}>
+          <View
+            style={{
+              marginBottom: 10,
+              paddingHorizontal: 20,
+              flexDirection: 'row',
+            }}>
+            <CustomButton
+              label={'사진파일 내려받기'}
+              labelColor={ColorWhite}
+              backgroundColor={footerUse ? ColorRed : '#DDD'}
+              borderRadius={5}
+              disabled={!footerUse}
+              flex={1}
+              onPress={() => {
+                webViews.current.postMessage(
+                  JSON.stringify({type: 'imagedown'}),
+                );
+                // navigation.navigate('Word', {pr_idx: data.idx});
+              }}
+            />
+            <View style={{width: 6}}></View>
             <CustomButton
               label={'PDF 다운로드'}
               labelColor={ColorWhite}
-              backgroundColor={ColorRed}
+              backgroundColor={footerUse ? ColorRed : '#DDD'}
               borderRadius={5}
               disabled={!footerUse}
+              flex={1}
               onPress={() => {
                 webViews.current.postMessage(JSON.stringify({type: 'pdfdown'}));
                 // navigation.navigate('Word', {pr_idx: data.idx});

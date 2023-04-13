@@ -4,7 +4,7 @@ import BackButton from '~/Components/BackButton';
 import CustomButton from '~/Components/CustomButton';
 import CustomModal from '~/Components/CustomModal';
 import DefaultHeader from '~/Components/DefaultHeader';
-import {ColorRed, ColorWhite} from '~/style/Color';
+import {ColorRed, ColorWhite, ColorBlack} from '~/style/Color';
 import {style} from './SettingStyle';
 
 import {logout} from '~/redux/reducers/loginReducer';
@@ -13,7 +13,19 @@ import AsyncStorage from '@react-native-community/async-storage'; //비동기 �
 import Api from '~/Api';
 import {push_change} from '~/redux/actions/loginAction';
 
-function Setting({navigation, mt_idx, mt_level, mt_push_yn}) {
+function Setting(props) {
+  const {
+    navigation,
+    mt_idx,
+    mt_level,
+    mt_push_yn,
+    mt_name,
+    mt_position,
+    mt_hp,
+  } = props;
+
+  console.log('setting proips', props);
+
   const [isLogout, setIsLogout] = useState(false);
   const [onoff1, setOnoff1] = useState(mt_push_yn == 'Y');
   const dispatch = useDispatch();
@@ -45,7 +57,9 @@ function Setting({navigation, mt_idx, mt_level, mt_push_yn}) {
               alignItems: 'center',
               borderBottomWidth: 1,
               borderColor: '#E8E8E8',
-              paddingVertical: 15,
+              // paddingVertical: 15,
+              // justifyContent: 'center',
+              height: 60,
             }}
             onPress={() => _pushOnoff()}>
             <Text style={style.title}>푸시알림 설정</Text>
@@ -56,7 +70,33 @@ function Setting({navigation, mt_idx, mt_level, mt_push_yn}) {
               onChange={() => _pushOnoff()}
             />
           </View>
-        ) : null}
+        ) : (
+          <View
+            style={{
+              padding: 20,
+              // borderBottomWidth: 1,
+              marginBottom: 20,
+              flexDirection: 'row',
+            }}>
+            <Text style={style.title}>
+              {mt_position} {mt_name}
+            </Text>
+            <Text style={style.titleSub}>{mt_hp}</Text>
+          </View>
+        )}
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Notify')}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderBottomWidth: 1,
+            borderColor: '#E8E8E8',
+            // paddingVertical: 15,
+            height: 60,
+          }}>
+          <Text style={style.title}>알림 내역</Text>
+        </TouchableOpacity>
         {mt_level == 2 ? (
           <TouchableOpacity
             onPress={() => navigation.navigate('Leave')}
@@ -65,7 +105,8 @@ function Setting({navigation, mt_idx, mt_level, mt_push_yn}) {
               alignItems: 'center',
               borderBottomWidth: 1,
               borderColor: '#E8E8E8',
-              paddingVertical: 15,
+              // paddingVertical: 15,
+              height: 60,
             }}>
             <Text style={style.title}>회원탈퇴</Text>
           </TouchableOpacity>
@@ -112,6 +153,8 @@ const mapStateToProps = (state) => {
     mt_level: state.login.mt_level,
     mt_name: state.login.mt_name,
     mt_push_yn: state.login.mt_push_yn,
+    mt_position: state.login.mt_position,
+    mt_hp: state.login.mt_hp,
   };
 };
 export default connect(mapStateToProps)(Setting);

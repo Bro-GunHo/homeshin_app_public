@@ -20,18 +20,19 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 //   }
 // });
 
-// async function registerAppWithFCM() {
-//   if (!messaging().isDeviceRegisteredForRemoteMessages) {
-//     await messaging().registerDeviceForRemoteMessages();
-//   }
-// }
-// async function requestUserPermission() {
-//   const settings = await messaging().requestPermission();
+async function registerAppWithFCM() {
+  if (!messaging().isDeviceRegisteredForRemoteMessages) {
+    await messaging().registerDeviceForRemoteMessages();
+  }
+}
+async function requestUserPermission() {
+  const settings = await messaging().requestPermission();
 
-//   if (settings) {
-//     console.log('Permission settings:', settings);
-//   }
-// }
+  if (settings) {
+    console.log('Permission settings:', settings);
+  }
+}
+
 // registerAppWithFCM();
 // requestUserPermission();
 
@@ -42,6 +43,11 @@ TextInput.defaultProps = TextInput.defaultProps || {};
 TextInput.defaultProps.allowFontScaling = false;
 
 function HeadlessCheck({isHeadless}) {
+  // React.useEffect(() => {
+  //   registerAppWithFCM();
+  //   requestUserPermission();
+  // }, []);
+
   if (isHeadless) {
     // App has been launched in the background by iOS, ignore
     return null;

@@ -4,6 +4,8 @@ pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
 
 platform :ios, '11.0'
+# $FirebaseSDKVersion = '6.29.0'
+$FirebaseSDKVersion = '8.11.0'
 
 target 'homeshin_app' do
   config = use_native_modules!
@@ -28,6 +30,15 @@ target 'homeshin_app' do
       if target.name == "React-Core.common-AccessibilityResources"
         target.remove_from_project
       end
+      
+      if target.name == "React-Core-AccessibilityResources"
+        target.remove_from_project
+      end
+      #       if target.name == "React-Core-60309c9c-AccessibilityResources"
+      #   target.remove_from_project
+      # end
+      
+            
     end
   end
 

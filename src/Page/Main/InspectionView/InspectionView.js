@@ -11,16 +11,15 @@ import Api, {NodataView, Loaders} from '~/Api';
 import cusToast from '~/Components/CusToast';
 import {useFocusEffect} from '@react-navigation/native';
 
-const list = [
-  {label: '신청', value: 0, key: 'iViewTab0'},
-  {label: '접수', value: 1, key: 'iViewTab1'},
-  {label: '점검완료', value: 2, key: 'iViewTab2'},
-];
-
 function InspectionView({navigation, mt_idx, mt_level}) {
   const [statusType, setStatusType] = useState(0);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [list, setList] = useState([
+    {label: '신청', value: 0, key: 'iViewTab0'},
+    {label: '접수', value: 1, key: 'iViewTab1'},
+    {label: '점검완료', value: 2, key: 'iViewTab2'},
+  ]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -40,12 +39,22 @@ function InspectionView({navigation, mt_idx, mt_level}) {
     else if (statusType == 1) pr_status = 'B';
     else if (statusType == 2) pr_status = 'C';
     Api.send(
-      'proc_project_list',
+      'proc_project_list_new',
       {type: mt_level, mt_idx, pr_status},
       (responseJson) => {
         if (responseJson.result == 'Y') {
           setIsLoading(false);
-          setData(responseJson.item);
+
+          let temp = responseJson.item;
+          arrItems = temp.list;
+          total = temp.total;
+          let tempList = Api.obClone(list);
+          tempList[0].count = total.statusA;
+          tempList[1].count = total.statusB;
+          tempList[2].count = total.statusC;
+          setList(tempList);
+
+          setData(arrItems);
         }
       },
     );

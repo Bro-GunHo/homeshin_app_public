@@ -39,6 +39,7 @@ function DetailProblemCard({item, navigation, mt_idx, mt_level, refresh}) {
       total: 1,
       index: 0,
       arrItems: [uri],
+      pr_idx: item.pr_idx,
     });
   };
 

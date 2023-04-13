@@ -9,7 +9,7 @@ import {FontPretendardBold} from '~/style/Font';
   setvalue = 값을 변경 해주는 함수.
 */
 
-function TabBar({list, setValue, value}) {
+function TabBar({list, setValue, value, count}) {
   console.log(list, value);
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -33,6 +33,7 @@ function TabBar({list, setValue, value}) {
               color: value === item.value ? ColorRed : ColorBlack,
             }}>
             {item.label}
+            {typeof item.count != 'undefined' ? '(' + item.count + ')' : null}
           </Text>
         </TouchableOpacity>
       ))}

@@ -16,7 +16,7 @@ import {style} from './HomeStyle';
 import {connect, useDispatch} from 'react-redux';
 import Api from '~/Api';
 import cusToast from '~/Components/CusToast';
-
+import messaging from '@react-native-firebase/messaging';
 function Home(props) {
   const {navigation, mt_idx, mt_id, mt_level} = props;
   const [linkTel, setLinkTel] = useState('');
@@ -33,9 +33,33 @@ function Home(props) {
         if (iterator.cd_c == 'KAKAO') setLinkKakao(iterator.cd_memo);
       }
     }
+
+    messaging().onMessage(async (remoteMessage) => {
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      console.log('A new FCM message arrived!', remoteMessage.data);
+
+      Alert.alert(
+        remoteMessage.data.title,
+        remoteMessage.data.body,
+        [
+          // {
+          //   text: '취소',
+          //   onPress: () => console.log('Cancel'),
+          //   style: 'cancel',
+          // },
+          {
+            text: '확인',
+            onPress: () => {
+              callScreen(props, remoteMessage.data);
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    });
   }, []);
 
-  const [loginType, setLoginType] = useState(mt_level == '2' ? 1 : 2); //1: 입주자 , 2: 점검자 , 3: 책임자
+  const [loginType, setLoginType] = useState(mt_level == '2' ? 1 : 2); //1: 입주자(mt_level = 2) , 2: 점검자(mt_level=6) , 3: 책임자(mt_level=7)
 
   return (
     <SafeAreaView style={style.container}>
@@ -43,9 +67,30 @@ function Home(props) {
         contentContainerStyle={{
           minHeight: Dimensions.get('screen').height,
           justifyContent: 'flex-start',
-          paddingTop: 50,
+          paddingTop: 35,
           // justifyContent: 'space-between',
         }}>
+        {loginType == 2 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}>
+            {props.mt_position ? (
+              <Text style={[style.title, {fontSize: 13, textAlign: 'right'}]}>
+                {props.mt_position}
+              </Text>
+            ) : null}
+            <Text
+              style={[
+                style.title,
+                {fontSize: 13, paddingRight: 20, paddingLeft: 6},
+              ]}>
+              {props.mt_name}
+            </Text>
+          </View>
+        ) : null}
         <View style={[style.section, {justifyContent: 'flex-end'}]}>
           <View style={{alignItems: 'center'}}>
             <Text style={style.title}>안전한</Text>
@@ -70,7 +115,7 @@ function Home(props) {
           />
           <View style={{width: '100%', paddingHorizontal: 20}}>
             <CustomButton
-              label={loginType === 1 ? '점검 신청' : '점검 현황 조회'}
+              label={loginType === 1 ? '점검 신청' : '점검 현황'}
               labelColor={ColorWhite}
               borderRadius={5}
               backgroundColor={ColorRed}
@@ -265,6 +310,7 @@ const mapStateToProps = (state) => {
     mt_id: state.login.mt_id,
     mt_level: state.login.mt_level,
     mt_name: state.login.mt_name,
+    mt_position: state.login.mt_position,
   };
 };
 export default connect(mapStateToProps)(Home);

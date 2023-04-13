@@ -77,7 +77,10 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
           </Text>
         </View> */}
         <View style={style.section}>
-          <Text style={[style.title]}>점검 선택</Text>
+          <Text style={[style.title, {fontSize: 24}]}>
+            <Text style={{color: ColorRed}}>점검</Text> 선택
+          </Text>
+          {/* <Text style={[style.title]}>점검 선택</Text> */}
           <View style={{marginVertical: 5}}>
             <CheckSelector
               label={'육안 점검'}
@@ -121,8 +124,16 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
           </View>
           <Text style={style.subLabel}>육안 + 장비 점검, 정밀한 하자 점검</Text>
         </View>
+
         <View style={style.section}>
-          <Text style={style.title}>점검 정보</Text>
+          <Text
+            style={[
+              style.title,
+              {fontSize: 24, marginTop: 20, marginBottom: 15},
+            ]}>
+            <Text style={{color: ColorRed}}>점검</Text> 정보
+          </Text>
+          {/* <Text style={style.title}>점검 정보</Text> */}
           <Text
             style={
               style.subTitle
@@ -141,7 +152,7 @@ function InspectionApply2({navigation, route, mt_idx, mt_name}) {
           </Text>
           <Text style={style.subTitle}>
             {inspectType === 1
-              ? '육안점검'
+              ? '육안 점검'
               : inspectType === 2
               ? '장비 점검'
               : '정밀 점검 패키지'}

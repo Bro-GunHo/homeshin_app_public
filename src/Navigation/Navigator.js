@@ -31,6 +31,7 @@ import Setting from '~/Page/Main/Setting/Setting';
 
 import GalleryDetail from '~/shared/GalleryDetail';
 import Word from '~/Page/Main/Word/Word';
+import Notify from '~/Page/Main/Notify/Notify';
 
 import Auth from '~/Components/Auth';
 
@@ -165,6 +166,12 @@ function Navigator() {
       <Stack.Screen
         name="Leave"
         component={Leave}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="Notify"
+        component={Notify}
         options={{headerShown: false}}
       />
 

@@ -14,6 +14,7 @@ export function updateLogin(args) {
     mt_img: args.mt_img,
     mt_img_big: args.mt_img_big,
     mt_push_yn: args.mt_push_yn,
+    mt_position: args.mt_position,
   };
 }
 
@@ -29,6 +30,7 @@ export function logout() {
     mt_img: '',
     mt_img_big: '',
     mt_push_yn: 'Y',
+    mt_position: '',
   };
 }
 

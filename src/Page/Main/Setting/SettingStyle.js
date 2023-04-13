@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {ColorWhite} from '~/style/Color';
-import {FontPretendardBold} from '~/style/Font';
+import {ColorWhite, ColorBlack} from '~/style/Color';
+import {FontPretendardBold, FontPretendardMedium} from '~/style/Font';
 
 export const style = StyleSheet.create({
   container: {flex: 1, backgroundColor: ColorWhite},
@@ -8,5 +8,12 @@ export const style = StyleSheet.create({
     flex: 1,
     fontFamily: FontPretendardBold,
     fontSize: 15,
+    color: ColorBlack,
+  },
+  titleSub: {
+    flex: 1,
+    fontFamily: FontPretendardMedium,
+    fontSize: 15,
+    color: '#878787',
   },
 });

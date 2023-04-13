@@ -39,11 +39,6 @@ var minute_option = [
 
 //점검자용 점검 목록
 
-const list = [
-  {label: '접수', value: 1, key: 'IH_woker_2'},
-  {label: '점검완료', value: 2, key: 'IH_woker_3'},
-];
-
 function InspectionHistory({navigation, mt_idx, mt_level}) {
   const [statusType, setStatusType] = useState(1);
   const [searchType, setSearchType] = useState('통합검색');
@@ -57,6 +52,11 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
   const [listDataNull, setListDataNull] = useState(false);
   const [fetchingStatus, setFetchingStatus] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  const [list, setList] = useState([
+    {label: '접수', value: 1, key: 'IH_woker_2', count: 0},
+    {label: '점검완료', value: 2, key: 'IH_woker_3', count: 0},
+  ]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -73,7 +73,7 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
     else if (statusType == 1) pr_status = 'B';
     else if (statusType == 2) pr_status = 'C';
     Api.send(
-      'proc_project_list',
+      'proc_project_list_new',
       {
         type: mt_level,
         mt_idx,
@@ -86,19 +86,40 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
       (responseJson) => {
         try {
           if (responseJson.result == 'Y') {
-            let arrItems = responseJson.item;
+            let temp = responseJson.item;
+            arrItems = temp.list;
+            total = temp.total;
+            let tempList = Api.obClone(list);
+            tempList[0].count = total.statusB;
+            tempList[1].count = total.statusC;
+            setList(tempList);
+
             setIsLoading(false);
             setRefreshing(false);
             setData(refresh ? arrItems : data.concat(arrItems));
-            setFetchingStatus(responseJson.item.length === 0 ? false : true);
+            setFetchingStatus(responseJson.item.list === 0 ? false : true);
             setListDataNull(false);
           } else {
+            //0개도 성공으로 떨어지기때문에 여기로는 들어오기 힘듬
+
+            let tempList = Api.obClone(list);
+            tempList[0].count = 0;
+            tempList[1].count = 0;
+            setList(tempList);
+
             setData([]);
             setRefreshing(false);
             setFetchingStatus(false);
             setListDataNull(true);
           }
         } catch (e) {
+          let tempList = Api.obClone(list);
+          tempList[0].count = 0;
+          tempList[1].count = 0;
+          setList(tempList);
+
+          setIsLoading(false);
+
           setData([]);
           setRefreshing(false);
           setFetchingStatus(false);
@@ -131,7 +152,7 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
       <Loaders views={isLoading} />
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검현황조회'}
+        headerTitle={'점검 현황'}
       />
       <View style={{flex: 1}}>
         <TabBar list={list} setValue={setStatusType} value={statusType} />
@@ -149,7 +170,7 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
           }}>
           <ModalSelector
             data={minute_option}
-            initValue="시간 선택"
+            initValue=""
             accessible={true}
             backdropPressToClose={true}
             cancelText={'취소'}
@@ -166,7 +187,6 @@ function InspectionHistory({navigation, mt_idx, mt_level}) {
                 flexDirection: 'row',
                 alignItems: 'center',
                 // paddingVertical: 11,
-
                 paddingHorizontal: 15,
                 borderWidth: 1,
                 borderRadius: 5,

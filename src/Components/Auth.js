@@ -4,8 +4,9 @@ import {SafeAreaView, View, Platform, Alert} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from '@react-native-firebase/app';
-import iid from '@react-native-firebase/iid';
+// import iid from '@react-native-firebase/iid';
 import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import SplashScreen from 'react-native-splash-screen';
 import Api from '~/Api';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -50,53 +51,76 @@ function Auth(props) {
   };
 
   async function registerAppWithFCM() {
+    console.log(
+      'messaging().isDeviceRegisteredForRemoteMessages',
+      messaging().isDeviceRegisteredForRemoteMessages,
+    );
     if (!messaging().isDeviceRegisteredForRemoteMessages) {
+      console.log('111');
       await messaging().registerDeviceForRemoteMessages();
+      console.log('1111');
     }
+
+    console.log('11');
   }
   async function requestUserPermission() {
-    async function requestUserPermission(props) {
-      let settings = await messaging().hasPermission();
-      if (settings !== messaging.AuthorizationStatus.AUTHORIZED) {
-        settings = await messaging().requestPermission();
+    let settings = await messaging().hasPermission();
+
+    console.log('2222', settings, messaging.AuthorizationStatus.AUTHORIZED);
+    if (settings !== messaging.AuthorizationStatus.AUTHORIZED) {
+      settings = await messaging().requestPermission({
+        providesAppNotificationSettings: true,
+      });
+    }
+    console.log('3333');
+
+    const enabled =
+      settings === messaging.AuthorizationStatus.AUTHORIZED ||
+      settings === messaging.AuthorizationStatus.PROVISIONAL;
+
+    console.log('settings', settings, enabled);
+    if (enabled) {
+      // settings
+      // console.log('Permission settings:', settings);
+      // const fcmToken = await messaging().getToken();
+
+      if (Platform.OS === 'ios') {
+        PushNotificationIOS.setApplicationIconBadgeNumber(0);
       }
-      const enabled =
-        settings === messaging.AuthorizationStatus.AUTHORIZED ||
-        settings === messaging.AuthorizationStatus.PROVISIONAL;
 
-      console.log(settings, enabled);
-      if (enabled) {
-        // settings
-        // console.log('Permission settings:', settings);
+      // const id = await iid().get();
+      // const fcmToken = await firebase.iid().getToken();
+      // console.log('id', id, 'fcmToken', fcmToken);
 
-        // const fcmToken = await messaging().getToken();
-
-        if (Platform.OS === 'ios') {
-          PushNotificationIOS.setApplicationIconBadgeNumber(0);
-        }
-
-        const id = await iid().get();
-        const fcmToken = await firebase.iid().getToken();
-
-        const token = await messaging().getToken();
-        Api.state.mb_fcm = token;
-      }
+      const token = await messaging().getToken();
+      console.log('token_b', token);
+      Api.state.mb_fcm = token;
     }
   }
 
   //----------------------------------------------------------------------------
   async function Auth_info() {
+    console.log('1-');
     await registerAppWithFCM();
-    await requestUserPermission();
+    console.log('2');
+    requestUserPermission();
 
+    console.log('3');
     let mt_idx = await AsyncStorage.getItem('@mb_id');
+    console.log('4');
     let mt_level = await AsyncStorage.getItem('@mb_level');
     let mt_name = await AsyncStorage.getItem('@mb_key');
 
     var temp_mt_id = ''; //await AsyncStorage.getItem("temp_mt_id");
     console.log('@mt_id:', mt_idx);
 
+    console.log('5');
     const token = await messaging().getToken();
+    console.log('token_2', token);
+
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
 
     messaging().onNotificationOpenedApp((remoteMessage) => {
       console.log(remoteMessage);
@@ -125,7 +149,7 @@ function Auth(props) {
         //setLoading(false);
       });
 
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+    messaging().onMessage(async (remoteMessage) => {
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
       console.log('A new FCM message arrived!', remoteMessage.data);
 
@@ -151,14 +175,17 @@ function Auth(props) {
 
     // setTimeout(() => {
     SplashScreen.hide();
-    // }, 1200);
 
-    //----------------------------------------------------------------------------
     if (mt_idx) {
       getLogin(mt_idx, temp_mt_id, token, mt_level, mt_name);
     } else {
       navigation.dispatch(StackActions.replace('Login', {}));
     }
+    // }, 1500);
+
+    // return unsubscribe;
+
+    //----------------------------------------------------------------------------
   }
 
   const getLogin = (mt_idx, temp_mt_id, token, mt_level, mt_name) => {

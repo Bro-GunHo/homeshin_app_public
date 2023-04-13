@@ -68,7 +68,7 @@ function InspectionUserDetail({navigation, route, mt_idx, mt_level}) {
         setStatusType(newList[0].value);
         // console.log('@@', responseJson.item.project_data[0]);
       } else {
-        navigation.navigate.goBack();
+        navigation.goBack();
       }
     });
   };
@@ -77,7 +77,7 @@ function InspectionUserDetail({navigation, route, mt_idx, mt_level}) {
     <SafeAreaView style={style.container}>
       <DefaultHeader
         headerLeft={<BackButton navigation={navigation} />}
-        headerTitle={'점검 현황 상세'}
+        headerTitle={'점검 신청 정보'}
       />
       <View style={{flex: 1, padding: 20}}>
         <Text style={[style.title, {fontSize: 24}]}>{data.mt_name}</Text>

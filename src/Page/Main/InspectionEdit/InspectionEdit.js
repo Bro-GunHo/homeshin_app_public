@@ -21,19 +21,23 @@ import ModalSelector from 'react-native-modal-selector';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DatePickerModal from '~/Components/DatePickerModal';
 
-var arr = [];
-for (var i = 9; i < 18; i++) {
-  var arr_str = i.toString();
-  if (i < 10) {
-    arr_str = '0' + i;
-  }
-  arr.push({key: i, label: arr_str, value: arr_str});
-}
+// var arr = [];
+var arr = [
+  {key: 0, label: '10', value: '10'},
+  {key: 1, label: '13', value: '13'},
+];
+// for (var i = 9; i < 18; i++) {
+//   var arr_str = i.toString();
+//   if (i < 10) {
+//     arr_str = '0' + i;
+//   }
+//   arr.push({key: i, label: arr_str, value: arr_str});
+// }
 const hour_option = arr;
 
 let arr2 = [
   {key: '0_min', label: '00', value: '00'},
-  {key: '1_min', label: '30', value: '30'},
+  // {key: '1_min', label: '30', value: '30'},
 ];
 const minute_option = arr2;
 
